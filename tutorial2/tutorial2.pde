@@ -32,7 +32,7 @@ void draw() {
   float x2 = 10 + (sin(angle2 + PI/2) * position/2) + position/2;
 
   fill(255, 204);
-  rect(x1, height/2,d1, d1); 
+  rect(x1, height/2, d1, d1); 
   rect(x2, height/2, d2, d2);
 
 
