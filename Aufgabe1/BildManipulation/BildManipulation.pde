@@ -14,12 +14,11 @@ void setup(){
 
 void draw(){
   
-  rectScale = int(20*sin(0.02*count)+30);
+  rectScale = int(20*cos(0.02*count)+30);
   
   for(int h=0; h<height; h += rectScale){
     for(int w=0; w<width; w += rectScale){
-      color c = img.get(w,h);
-      
+      color c = img.get(w,h);    
       fill(c);
       noStroke();
       rect(w, h, rectScale, rectScale);
@@ -27,6 +26,5 @@ void draw(){
   }
   
   count++;
-  
   // saveFrame("output/picManip_####.png");
 }
