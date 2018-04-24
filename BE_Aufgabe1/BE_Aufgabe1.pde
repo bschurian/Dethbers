@@ -7,8 +7,8 @@
  */
 
 PImage img;
-float offset = 0;
-float easing = 0.05;
+//float offsetX = 0;
+//float offsetY = 0;
 float r = 50;
 
 void setup() {
@@ -19,12 +19,7 @@ void setup() {
 }
 
 void draw() { 
-  //for(int i = 0; i< img.height; i++){
-  //  for (int j = 0; j< img.width; j++){
-  //    img.pixels[i*j] = img.pixels[i*j+2 % img.pixels.length];
-  //  }
-  //}
-  image(img, 0, 0);  // Display at full opacity
+  image(img, 0, 0);
   float cycleOne = sin(millis()/1000.0)*(r/2);
   for(int yI = -1; yI < 2; yI++){
     for(int xI = -1; xI < 3; xI++){
@@ -40,6 +35,8 @@ void draw() {
       star(r*xI*6+2*r+2*r+r, r*4*yI+r*2,  r, r-cycleOne, 6);
     }
   }
+  //offsetX += 1;
+  //offsetY += 0.1;
 }
 
 void star(float x, float y, float fixR, float changR, int npoints) {
