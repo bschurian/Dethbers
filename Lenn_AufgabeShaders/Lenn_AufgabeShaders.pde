@@ -2,8 +2,8 @@ PShader edges;
 PImage img;
     
 void setup() {
-  size(640, 360, P2D);
-  img = loadImage("leaves.jpg");      
+  size(300, 400, P2D);
+  img = loadImage("me.jpg");      
   edges = loadShader("edges.glsl");
 }
 
