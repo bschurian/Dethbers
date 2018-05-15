@@ -7,9 +7,10 @@
  */
 
 PImage img;
-//float offsetX = 0;
-//float offsetY = 0;
+float offsetX = 0;
+float offsetY = 0;
 float r = 50;
+float speed = 1.0/2.0;
 
 void setup() {
   size(640, 360);
@@ -21,22 +22,25 @@ void setup() {
 void draw() { 
   image(img, 0, 0);
   float cycleOne = sin(millis()/1000.0)*(r/2);
-  for(int yI = -1; yI < 2; yI++){
-    for(int xI = -1; xI < 3; xI++){
+  for(int yI = -3; yI < 2; yI++){
+    for(int xI = -2; xI < 3; xI++){
       // 1 2     1 2
       //     3 4
-      fill(img.get((int)(r*xI*6          ), (int)(r*4*yI    )));
-      star(r*xI*6          , r*4*yI    ,  r, r+cycleOne, 6);
-      fill(img.get((int)(r*xI*6+2*r      ), (int)(r*4*yI    )));
-      star(r*xI*6+2*r      , r*4*yI    ,  r, r-cycleOne, 6);
-      fill(img.get((int)(r*xI*6    +2*r+r), (int)(r*4*yI+r*2)));
-      star(r*xI*6    +2*r+r, r*4*yI+r*2,  r, r+cycleOne, 6);
-      fill(img.get((int)(r*xI*6+2*r+2*r+r), (int)(r*4*yI+r*2)));
-      star(r*xI*6+2*r+2*r+r, r*4*yI+r*2,  r, r-cycleOne, 6);
+      fill(img.get((int)(r*xI*6          +offsetX), (int)(r*4*yI    +offsetY)));
+      star(r*xI*6          +offsetX, r*4*yI    +offsetY,  r, r+cycleOne, 6);
+      
+      fill(img.get((int)(r*xI*6+2*r      +offsetX), (int)(r*4*yI    +offsetY)));
+      star(r*xI*6+2*r      +offsetX, r*4*yI    +offsetY,  r, r-cycleOne, 6);
+      
+      fill(img.get((int)(r*xI*6    +2*r+r+offsetX), (int)(r*4*yI+r*2+offsetY)));
+      star(r*xI*6    +2*r+r+offsetX, r*4*yI+r*2+offsetY,  r, r+cycleOne, 6);
+      
+      fill(img.get((int)(r*xI*6+2*r+2*r+r+offsetX), (int)(r*4*yI+r*2+offsetY)));
+      star(r*xI*6+2*r+2*r+r+offsetX, r*4*yI+r*2+offsetY,  r, r-cycleOne, 6);
     }
   }
-  //offsetX += 1;
-  //offsetY += 0.1;
+  offsetX = 1.0*speed +(offsetX%(r*2*3));
+  offsetY = 0.2*speed +(offsetY%(r*2*3));
 }
 
 void star(float x, float y, float fixR, float changR, int npoints) {
