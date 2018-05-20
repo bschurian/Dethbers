@@ -24,12 +24,11 @@ void draw() {
   
   background(51);
   
-  
   float d1 = 10 + (sin(angle1) * size/2) + size/2;
-  float d2 = 10 + (sin(angle1 + PI/2) * size/2) + size/2;
+  float d2 = 10 + (sin(angle1 + PI) * size/2) + size/2;
   
   float x1 = 10 + (sin(angle2) * position/2) + position/2;
-  float x2 = 10 + (sin(angle2 + PI/2) * position/2) + position/2;
+  float x2 = 10 + (sin(angle2 + PI) * position/2) + position/2;
 
   fill(255, 204);
   rect(x1, height/2, d1, d1); 
