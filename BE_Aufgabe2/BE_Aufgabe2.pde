@@ -26,8 +26,7 @@ void update() {
         float tempIm = 2.0*re*im;
         re = tempRe + origRe;
         im = tempIm + origIm;
-        if(re + im > thresh){
-          print(" "+re+" "+im+"!");
+        if (dist(re*re, im*im, 0, 0) > 4.0) {
           diverged = true;
           float grey = (float(i)/maxIters)*255;
           data.pixels[y*data.width+x] = color(1); 
