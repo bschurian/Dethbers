@@ -4,6 +4,10 @@ precision mediump int;
 #endif
 
 //uniform sampler2D texture;
+uniform float rightBound;
+uniform float leftBound;
+uniform float upBound;
+uniform float downBound;
 
 varying vec4 vertColor;
 varying vec4 vertTexCoord;
@@ -16,6 +20,31 @@ float rand(vec2 co){
 
 void main() {
   int maxIters = 200;
-  //for(){}
-  gl_FragColor = vec4(rand(vec2(vertTexCoord)));
+  rightBound;
+  leftBound;
+  upBound;
+  downBound;
+  float x = vertTexCoord.x;
+  float y = vertTexCoord.y;
+  float origRe = leftBound + x*abs(leftBound-rightBound);
+  float origIm = downBound + y*abs(upBound-downBound);
+	float re = origRe;
+	float im = origIm;
+	bool diverged = false;
+	for(int i = 1; i <= maxIters; i++){
+	float tempRe = re*re - im*im;
+	float tempIm = 2.0*re*im;
+	re = tempRe + origRe;
+	im = tempIm + origIm;
+	if (abs(re*re)+abs(im*im) > 4.0) {
+	  diverged = true;
+	  float grey = (float(i)/maxIters);
+	  gl_FragColor = vec4(grey,grey,grey,1); 
+	  break;
+	  }
+	}
+	if(!diverged){
+            gl_FragColor = vec4(0,0,0,1);
+	}
+  //gl_FragColor = vec4(x,y,0,1);
 }

@@ -3,8 +3,8 @@
  * 
  */
 
-protected int maxIters = 20;
-protected int thresh = 4;
+protected int maxIters = 200;
+protected int thresh = 10;
 protected float rightBound = 1;
 protected float leftBound = -2.5;
 protected float upBound = 1;
@@ -14,7 +14,7 @@ PImage data;
 
 void update() {
   data.loadPixels();
-  for (int y = 0; y < data.height/2; y++) {
+  for (int y = 0; y < data.height; y++) {
     float origIm = downBound + (float(y)/data.height) * abs(upBound - downBound); //<>//
     for (int x = 0; x < data.width; x++) {
       float origRe = leftBound + (float(x)/data.width) * abs(leftBound - rightBound);
@@ -29,14 +29,13 @@ void update() {
         if (dist(re*re, im*im, 0, 0) > 4.0) {
           diverged = true;
           float grey = (float(i)/maxIters)*255;
-          data.pixels[y*data.width+x] = color(1); 
+          data.pixels[y*data.width+x] = color(grey); 
           break;
         }
       }
       if(!diverged){
         data.pixels[y*data.width+x] = color(0,1,0);
       }
-      print(data.pixels[y*data.width+x]);
     }
   }
   data.updatePixels();
@@ -44,7 +43,7 @@ void update() {
 }
 
 void setup() {
-  size(600, 400);
+  size(640, 360);
   data = new PImage(width, height);
 }
 
