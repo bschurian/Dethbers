@@ -3,7 +3,6 @@
  * 
  */
 
-
 protected int maxIters = 100;
 protected int thresh = 3;
 protected int zoom = 1;
@@ -11,7 +10,6 @@ protected float rightBound =  1*zoom;
 protected float leftBound  = -2*zoom;
 protected float upBound    =  1*zoom;
 protected float downBound  = -1*zoom;
-
 
 PImage data;
 
@@ -30,18 +28,18 @@ void update() {
         float tempIm = 2.0 * re * im;
         re = tempRe + origRe;
         im = tempIm + origIm;
-        if(re + im > thresh){
+        if (dist(re*re, im*im, 0, 0) > 4.0) {
           diverged = true;
           float grey = (float(i)/maxIters)*255;
-          data.pixels[y*data.width+x] = color(grey); 
+          data.pixels[y*data.width+x] = color(grey);
           break;
         }
       }
       if(!diverged){
         data.pixels[y*data.width+x] = color(0);
       }
-//      data.pixels[y*data.width+x] = color(origRe*255, origIm * 255, 0); 
-  //    data.pixels[y*data.width+x] = color(re*255, im * 255, 0); 
+      //data.pixels[y*data.width+x] = color(origRe*255, origIm * 255, 0);
+      //data.pixels[y*data.width+x] = color(re*255, im * 255, 0);
     }
   }
   data.updatePixels();
