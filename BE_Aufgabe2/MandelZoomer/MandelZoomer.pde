@@ -1,9 +1,9 @@
 PShader mandel;
-protected int thresh = 10;
-protected float rightBound = 1;
-protected float leftBound = -2.5;
-protected float upBound = 1;
-protected float downBound = - 1;
+int thresh = 10;
+final float rightBound = 1;
+final float leftBound = -2.5;
+final float upBound = 1;
+final float downBound = - 1;
 float zTrans;
 float xTrans;
 float yTrans;
@@ -14,6 +14,13 @@ void setup() {
   noStroke();
 
   mandel = loadShader("mandelzoomer.glsl");
+
+  beginCamera();
+  float fov = PI/3.0;
+  float cameraZ = (height/2.0) / tan(fov/2.0);;
+  perspective(fov, float(width)/float(height), 0.1, 1000);
+  translate(width/2, height/2, 310);
+  endCamera();
 }
 
 void update() {
@@ -26,32 +33,45 @@ void update() {
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  zTrans += e;
-  println(zTrans);
+  zTrans += e*10;
 }
 
-void mouseDragged(){
+void keyPressed() {
+  float zDelta=0;
+  if (keyCode==UP) {
+    zDelta = -1;
+  }
+  if (keyCode==DOWN) {
+    zDelta = 1;
+  }
+  zTrans += zDelta;
+  print(zTrans);
+  beginCamera();
+  translate(0, 0, zDelta);
+  endCamera();
+}  
+
+void mouseDragged() {
   xTrans = mouseX; 
-  yTrans = mouseY; 
+  yTrans = mouseY;
 }
 
 void draw() {
   lights();
-  background(0);
+  background(100);
 
   beginCamera();
-  camera(0, 0, 1, //coordinate for the eye (x,y,z)
-         0, 0, 0,   //coordinate for the center of the scene (x,y,z)
-         0, 1, 0);  // upX,upY,upZ
-  translate(xTrans,yTrans,-zTrans);
+  //camera(0, 0, 31, //coordinate for the eye (x,y,z)
+  //       0, 0, 0,   //coordinate for the center of the scene (x,y,z)
+  //       0, 1, 0);  // upX,upY,upZ
+  //frustum(-10, 0, 0, 10, 10, 200);
+//  translate(0, 0, -zTrans);
   endCamera();
-  
-box(90);
-  //rect(0, 0, width, height);
 
+  rect(leftBound, downBound, -leftBound+rightBound, -downBound+upBound);
+  //box(1, 1, 1);
 
   update();
-  text(nf(frameRate, 2, 1) + " fps", 10, 30);
-  text(width + "x" + height + " pixels", 10, 45);
- // println(nf(frameRate, 2, 1) + " fps", 10, 30);
+  //text(nf(frameRate, 2, 1) + " fps", 10, 10, 45);
+  //println(nf(frameRate, 2, 1) + " fps", 10, 30);
 }
