@@ -1,9 +1,9 @@
 PShader mandel;
 int thresh = 10;
-final float rightBound = 1;
-final float leftBound = -2.5;
-final float upBound = 1;
-final float downBound = - 1;
+float rightBound = 1;
+float leftBound = -2.5;
+float upBound = 1;
+float downBound = - 1;
 float zTrans;
 float xTrans;
 float yTrans;
@@ -11,15 +11,13 @@ float yTrans;
 
 void setup() {
   size(640, 360, P3D);
+  //defaultCam is ortho();
   noStroke();
 
   mandel = loadShader("mandelzoomer.glsl");
 
   beginCamera();
-  float fov = PI/3.0;
-  float cameraZ = (height/2.0) / tan(fov/2.0);;
-  perspective(fov, float(width)/float(height), 0.1, 1000);
-  translate(width/2, height/2, 310);
+  translate(width/2, height/2, 0);
   endCamera();
 }
 
@@ -33,42 +31,19 @@ void update() {
 
 void mouseWheel(MouseEvent event) {
   float e = event.getCount();
-  zTrans += e*10;
+  float x = float(mouseX)/width;
+  //println(x);
 }
 
-void keyPressed() {
-  float zDelta=0;
-  if (keyCode==UP) {
-    zDelta = -1;
-  }
-  if (keyCode==DOWN) {
-    zDelta = 1;
-  }
-  zTrans += zDelta;
-  print(zTrans);
-  beginCamera();
-  translate(0, 0, zDelta);
-  endCamera();
-}  
-
-void mouseDragged() {
-  xTrans = mouseX; 
-  yTrans = mouseY;
-}
+float c = 0;
 
 void draw() {
   lights();
   background(100);
 
-  beginCamera();
-  //camera(0, 0, 31, //coordinate for the eye (x,y,z)
-  //       0, 0, 0,   //coordinate for the center of the scene (x,y,z)
-  //       0, 1, 0);  // upX,upY,upZ
-  //frustum(-10, 0, 0, 10, 10, 200);
-//  translate(0, 0, -zTrans);
-  endCamera();
-
-  rect(leftBound, downBound, -leftBound+rightBound, -downBound+upBound);
+  //rect(leftBound, downBound, -leftBound+rightBound, -downBound+upBound);
+  rect(-float(width)/2, -float(height)/2, float(width), float(height));
+  //rect(0,0,1000, 1000);
   //box(1, 1, 1);
 
   update();
