@@ -12,7 +12,7 @@ void setup() {
   //defaultCam is ortho();
   noStroke();
 
-  mandel = loadShader("mandelzoomer.glsl");
+  mandel = loadShader("muschel.glsl");
 
   beginCamera();
   translate(width/2, height/2, 0);
