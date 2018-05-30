@@ -2,22 +2,21 @@
 precision mediump float;
 precision mediump int;
 #endif
- 
+
 //uniform sampler2D texture;
 uniform float rightBound;
 uniform float leftBound;
 uniform float upBound;
 uniform float downBound;
- 
-varying vec4 vertColor;
+
 varying vec4 vertTexCoord;
- 
+
 const vec4 lumcoeff = vec4(0.299, 0.587, 0.114, 0);
- 
+
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
 }
- 
+
 void main() {
   int maxIters = 200;
   rightBound;
@@ -39,12 +38,13 @@ void main() {
   if (abs(re*re)+abs(im*im) > 4.0) {
     diverged = true;
     float grey = (float(i)/maxIters);
-    gl_FragColor = vec4(grey,grey,grey,1); 
+    gl_FragColor = vec4(grey,grey,grey,1);
+    //gl_FragColor = vec4(x,y,0,1);
     break;
     }
   }
   if(!diverged){
             gl_FragColor = vec4(0,0,0,1);
   }
-  //gl_FragColor = vec4(x,y,0,1);
+  // gl_FragColor = vec4(x,y,0,1);
 }
