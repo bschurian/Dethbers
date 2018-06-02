@@ -7,12 +7,14 @@ class Torus {
   private int segments;
   private float radius;
   private PShape shape;
+  private float alpha;
+  private float z0;
 
   // Stores geometry
   Vector<PVector> vertex;
   Vector<PVector> vertexNormal;
   Vector<Integer[]> face;  // quads (four indices per face)
-  
+
   // Used for lazy generation of geometry
   private boolean dirty;
   PShape geometry;
@@ -21,36 +23,46 @@ class Torus {
     // Default values
     segments = 100;
     radius = 5;
+    alpha = PI/6;
+    z0 = 0;
     shape = createShape(ELLIPSE, 0, 0, 1, 1);
     geometry = new PShape();
     dirty = true;
   }
 
   // TODO: This is different for a shell
+  // Eidt: 30.05.18
   private PVector position(float t) {
+
+    float e = pow(exp(1.0), alpha*t); 
     return new PVector(
-      radius * cos(t), 
-      radius * sin(t), 
-      0
-    );
+      radius * cos(t)* e, 
+      radius * sin(t)*e, 
+      z0*e
+      );
   }
 
-  // TODO: This is different for a shell
+  // TODO: This is different for a shell 
+  // Eidt: 30.05.18
   private PVector derivate1(float t) {
-    return new PVector(
-      - radius * sin(t), 
-      radius * cos(t), 
-      0
-    );
+    float e = pow(exp(1.0), alpha*t); 
+
+    return new PVector( 
+      radius * (alpha *cos(t)-sin(t))*e, 
+      radius * (alpha *sin(t) + cos(t))*e, 
+      z0*alpha*e
+      );
   }
 
   // TODO: This is different for a shell
+  // Eidt: 30.05.18
   private PVector derivate2(float t) {
-    return new PVector(
-      - radius * cos(t), 
-      - radius * sin(t), 
-      0
-    );
+    float e = pow(exp(1.0), alpha*t); 
+    return new PVector( 
+      radius*((pow(alpha, 2)- 1) *cos(t) - 2*alpha * sin(t))*e, 
+      radius*((pow(alpha, 2) -1) * sin(t)+ 2* alpha* cos(t))*e, 
+      z0*pow(alpha, 2)*e 
+      );
   }
 
   private PMatrix3D frenet(float t) {
@@ -69,10 +81,12 @@ class Torus {
       e2.y, e1.y, e0.y, 0, 
       e2.z, e1.z, e0.z, 0, 
       0, 0, 0, 1
-    );
-    
+      );
+
+
     // Scale
-    final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
+    //final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
+    final float f = pow(exp(1.0), alpha*2*t);  // Edit: 30.05.18
     matrix.scale(f, f, f);
 
     return matrix;
@@ -83,28 +97,33 @@ class Torus {
     // These need to be filled
     vertex = new Vector<PVector>();
     vertexNormal = new Vector<PVector>();
-    
+
     // Go along the path and subdivide it into rings. Use the position() method to do this.
     // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix.
     // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
     // Hint: When looping over the shape vertices, use only use shape vertices with a vertex code of "VERTEX"
-  
-    //for(int i = 0; i < segments; i++){
-    //  float t = float(i)/segments;
-    //  PVector pos = position(t);
-    //  vertex.add(pos);
-    //  PMatrix3D fre = frenet(t);
-    //  vertexNormal.add(pos);
-    //}
-    vertex.add(PVector.random3D());
-    vertex.add(PVector.random3D());
-    vertex.add(PVector.random3D());
-    vertex.add(PVector.random3D());
-    vertexNormal.add(PVector.random3D());
-    vertexNormal.add(PVector.random3D());
-    vertexNormal.add(PVector.random3D());
-    vertexNormal.add(PVector.random3D());
+
+    // For schleife wurde endkommentiert
+   for (int i = 0; i < segments; i++) { // Go along the path and subdivide it into rings. Use the position() method to do this.
+      float t = float(i)/segments; 
+      PVector pos = position(t);
+      vertex.add(pos);
+      PMatrix3D fre = frenet(t);  // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix. 
+      vertexNormal.add(pos);      // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too.
+      
+
+      
+    }
     
+    
+    //vertex.add(PVector.random3D());
+    //vertex.add(PVector.random3D());
+    //vertex.add(PVector.random3D());
+    //vertex.add(PVector.random3D());
+    //vertexNormal.add(PVector.random3D());
+    //vertexNormal.add(PVector.random3D());
+    //vertexNormal.add(PVector.random3D());
+    //vertexNormal.add(PVector.random3D());
   }
 
   private void constructHull() {
@@ -115,9 +134,9 @@ class Torus {
     // Create quads (four-sided polygons) for each segment between two rings.
     // Save each quad into the face vector.
     // Hint: Front facing polygons are in CCW vertex order (openGL default)
-    
+
     // TODO
-    face.add(new Integer[]{0,1,2,3});
+    face.add(new Integer[]{0, 1, 2, 3});
   }
 
   private void create() {
@@ -139,7 +158,7 @@ class Torus {
       }
     }    
     geometry.endShape();
-    
+
     dirty = false;
   }
 
@@ -152,11 +171,11 @@ class Torus {
     dirty = true;
     return this;
   }
-  
+
   public float radius() { 
     return radius;
   }
-  
+
   public Torus radius(float radius) { 
     this.radius = radius;
     dirty = true;
@@ -166,7 +185,7 @@ class Torus {
   public PShape shape() { 
     return shape;
   }
-  
+
   public Torus shape(PShape shape) {
     this.shape = shape; 
     dirty = true;

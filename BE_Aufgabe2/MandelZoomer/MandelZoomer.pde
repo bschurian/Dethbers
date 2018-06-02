@@ -1,11 +1,10 @@
 PShader mandel;
-int thresh = 10;
-float rightBound = 1;
-float leftBound = -2.5;
-float upBound = 1;
-float downBound = - 1;
+protected int thresh = 10;
+protected float rightBound = 1;
+protected float leftBound = -2.5;
+protected float upBound = 1;
+protected float downBound = - 1;
 final float zoomFactor = 2;
-
 
 void setup() {
   size(640, 360, P3D);
@@ -65,6 +64,15 @@ void mouseWheel(MouseEvent event) {
   }
 }
 
+<<<<<<< HEAD
+void update() {
+  mandel.set("rightBound", rightBound);
+  mandel.set("leftBound", leftBound);
+  mandel.set("upBound", upBound);
+  mandel.set("downBound", downBound);
+  shader(mandel);
+  rect(0, 0, width, height);
+=======
 float c = 0;
 
 void draw() {
@@ -79,4 +87,11 @@ void draw() {
   resetShader();
   text(nf(frameRate, 2, 1) + " fps", -float(width)/2+40, -float(height)/2+40, 30);
   text(width + "x" + height + " pixels", -float(width)/2+40, -float(height)/2+60, 30);
+>>>>>>> Ben
+}
+
+void draw() {
+  update();
+  text(nf(frameRate, 2, 1) + " fps", 10, 30);
+  text(width + "x" + height + " pixels", 10, 45);
 }
