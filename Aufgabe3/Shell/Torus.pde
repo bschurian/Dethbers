@@ -9,7 +9,7 @@ class Torus {
   private PShape shape;
   private float alpha;
   private float z0;
-  private float turns = 2;
+  private float turns;
 
   // Stores geometry
   Vector<PVector> vertex;
@@ -23,9 +23,10 @@ class Torus {
   public Torus() {
     // Default values
     segments = 100;
-    radius = 5;
+    radius = 2  ;
+    turns = 2;
     alpha = PI/6;
-    z0 = 0;
+    z0 = alpha*2;
     shape = createShape(ELLIPSE, 0, 0, 1, 1);
     geometry = new PShape();
     dirty = true;
@@ -35,12 +36,13 @@ class Torus {
   // Eidt: 30.05.18
   private PVector position(float t) {
 
-    float e = pow(exp(1.0), alpha*t); 
-    return new PVector(
-      radius * cos(t)* e, 
-      radius * sin(t)*e, 
-      z0+e
-      );
+    float e = pow(exp(1), alpha*t);
+    PVector result = (new PVector(
+      radius * cos(t), 
+      radius * sin(t), 
+      z0
+      ));
+    return result.mult(e);
   }
 
   // TODO: This is different for a shell 
@@ -48,11 +50,11 @@ class Torus {
   private PVector derivate1(float t) {
     float e = pow(exp(1.0), alpha*t); 
 
-    return new PVector( 
-      radius * (alpha *cos(t)-sin(t))*e, 
-      radius * (alpha *sin(t) + cos(t))*e, 
-      z0+alpha*e
-      );
+    return (new PVector( 
+      radius * (alpha *cos(t)-sin(t)), 
+      radius * (alpha *sin(t) + cos(t)), 
+      z0*alpha
+      )).mult(e);
   }
 
   // TODO: This is different for a shell
@@ -60,16 +62,18 @@ class Torus {
   private PVector derivate2(float t) {
     float e = pow(exp(1.0), alpha*t); 
     return new PVector( 
-      radius*((pow(alpha, 2)- 1) *cos(t) - 2*alpha * sin(t))*e, 
-      radius*((pow(alpha, 2) -1) * sin(t)+ 2* alpha* cos(t))*e, 
-      z0+pow(alpha, 2)*e 
-      );
+      radius*((pow(alpha, 2)- 1) *cos(t) - 2*alpha * sin(t)), 
+      radius*((pow(alpha, 2) -1) * sin(t)+ 2* alpha* cos(t)), 
+      z0*pow(alpha, 2)
+      ).mult(e);
   }
 
   private PMatrix3D frenet(float t) {
 
     // Translate
     PMatrix3D matrix = new PMatrix3D();
+
+    // Scale
     final PVector pos = position(t);
     matrix.translate(pos.x, pos.y, pos.z);
 
@@ -84,11 +88,11 @@ class Torus {
       0, 0, 0, 1
       );
 
-
-    // Scale
     //final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
-    final float f = pow(exp(1.0), alpha*2*t);  // Edit: 30.05.18
+    final float f = pow(exp(1.0), alpha*t);  // Edit: 30.05.18
     matrix.scale(f, f, f);
+
+
 
     return matrix;
   }
@@ -157,11 +161,10 @@ class Torus {
     // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix.
     // Hint: When looping over the shape vertices, use only use shape vertices with a vertex code of "VERTEX"
 
-    // For schleife wurde endkommentiert
     for (int i = 1; i <= segments; i++) {
-      float t = float(i)/segments * 2*PI ;//* turns; 
+      float t = float(i)/segments * turns * 2*PI; 
       PVector pos = position(t);
-      
+
       //DEBUG: Path-only
       //vertex.add(pos);
       //vertexNormal.add(pos);
@@ -174,14 +177,9 @@ class Torus {
           fre.mult(v, modelV);
           // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
           vertex.add(modelV);
-          vertexNormal.add(v.normalize());
+          vertexNormal.add(v.sub(pos).normalize());
         }
       }
-      PVector modelV = new PVector(); // and transform it into model coordinates by using the frenet matrix.
-      fre.mult(shape.getVertex(5), modelV);
-      // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
-      vertex.add(modelV);
-      vertexNormal.add(shape.getVertex(5).normalize());
     }
   }
 
@@ -190,9 +188,10 @@ class Torus {
     // This needs to be filled
     face = new Vector<Integer[]>();
 
-    // Create quads (four-sided polygons) for each segment between two rings.
-    // Save each quad into the face vector.
-    // Hint: Front facing polygons are in CCW vertex order (openGL default)
+    //Create quads (four-sided polygons) for each segment between two rings.
+    //Save each quad into the face vector.
+    //Hint: Front facing polygons are in CCW vertex order (openGL default)
+
     int shapeVCount = vertex.size()/segments;
     for (int seg = 0; seg < segments - 1; seg++) {
       int segOffset = seg*shapeVCount;
@@ -251,6 +250,7 @@ class Torus {
 
   public Torus turns(float turns) { 
     this.turns = turns; 
+    this.alpha = PI/(12*turns);
     dirty = true;
     return this;
   }

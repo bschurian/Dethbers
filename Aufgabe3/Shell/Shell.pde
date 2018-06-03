@@ -23,14 +23,14 @@ void setup() {
   shader.set("color", 0.5, 0.9, 0.8);
 
   // Define extruded object
-  PShape path = createShape(ELLIPSE, 0, 0, 2, 1);
-  object = new Torus().radius(5).segments(100).shape(path).turns(1);
+  PShape path = createShape(ELLIPSE, 0, 0, 1, 1);
+  object = new Torus().radius(0.5).segments(100).shape(path).turns(5);
 }
 
 void draw() {
 
   background(80, 80, 120); 
-  //noStroke();  // Comment out to see wireframed
+  noStroke();  // Comment out to see wireframed
 
   // Set lights
   ambientLight(20, 20, 20);
