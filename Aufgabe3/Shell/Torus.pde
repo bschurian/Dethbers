@@ -23,10 +23,10 @@ class Torus {
   public Torus() {
     // Default values
     segments = 100;
-    radius = 2  ;
+    radius = 0.05;
     turns = 2;
-    alpha = PI/6;
-    z0 = alpha*2;
+    alpha = PI/24;
+    z0 = 2;
     shape = createShape(ELLIPSE, 0, 0, 1, 1);
     geometry = new PShape();
     dirty = true;
@@ -89,7 +89,7 @@ class Torus {
       );
 
     //final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
-    final float f = pow(exp(1.0), alpha*t);  // Edit: 30.05.18
+   final float f = pow(exp(1.0), alpha*t);  // Edit: 30.05.18
     matrix.scale(f, f, f);
 
 
@@ -161,7 +161,7 @@ class Torus {
     // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix.
     // Hint: When looping over the shape vertices, use only use shape vertices with a vertex code of "VERTEX"
 
-    for (int i = 1; i <= segments; i++) {
+    for (int i = 0; i <= segments; i++) { // For each ring,  
       float t = float(i)/segments * turns * 2*PI; 
       PVector pos = position(t);
 
@@ -170,14 +170,14 @@ class Torus {
       //vertexNormal.add(pos);
 
       PMatrix3D fre = frenet(t);
-      for (int j = 0; j< shape.getVertexCount()-1; j++) {// For each ring,  
-        PVector v = shape.getVertex(j); // take each shape vertex
+      for (int j = 0; j< shape.getVertexCount()-1; j++) { // take each shape vertex
+        PVector v = shape.getVertex(j); 
         if (shape.getVertexCode(j) == VERTEX) {
           PVector modelV = new PVector(); // and transform it into model coordinates by using the frenet matrix.
           fre.mult(v, modelV);
           // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
           vertex.add(modelV);
-          vertexNormal.add(v.sub(pos).normalize());
+          vertexNormal.add((new PVector(modelV.x - pos.x,modelV.y - pos.y,modelV.z - pos.z)).normalize());
         }
       }
     }
