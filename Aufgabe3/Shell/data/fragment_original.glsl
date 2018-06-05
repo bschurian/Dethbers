@@ -1,12 +1,3 @@
-
-
-//TODO PHONG SHADER
-
-
-// Licht normalisieren  -- Hinweis von Ihm
-
-
-
 // Material properties
 uniform vec3 color;
 
@@ -23,7 +14,7 @@ in vec3 camera_;
 in vec4 position_;
 
 void main() {
-/*
+
   // Ambient light
   vec3 objectColor = lightAmbient[0] * color;
 
@@ -34,7 +25,7 @@ void main() {
 
     // Diffuse light
     objectColor += lightDiffuse[1] * diffuseIntensity * color;
-  }*/
+  }
 
   gl_FragColor = vec4(normal_, 1.0);
 }
