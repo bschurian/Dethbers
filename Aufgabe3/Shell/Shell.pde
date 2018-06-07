@@ -41,7 +41,7 @@ void draw() {
   specular(255, 255, 255);
 
   // Draw shell
-  //shader(shader);
+  shader(shader);
   shape(object.geometry());
   /*
   stroke(1);

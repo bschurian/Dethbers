@@ -17,6 +17,7 @@ in vec4 position_;  //r ?
 
 
 //Add von Tim
+
 void main() {
 
   // Ambient light
@@ -33,9 +34,8 @@ void main() {
   vec3 specular = vec3(0);
   vec3 ambient = vec3(0);
 
-
-  float shininess = pow(dot(n, h));
-
+  float shininess = pow(dot(n, h),1.0);
+  //float shininess = dot(n, h);
   objectColor += lightSpecular[1] * shininess * color;
 
   float diffuseIntensity = dot(n, light_);
