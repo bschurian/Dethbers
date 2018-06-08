@@ -1,4 +1,4 @@
-
+ //<>//
 import java.util.*;
 
 class Torus {
@@ -26,7 +26,7 @@ class Torus {
     radius = 0.05;
     turns = 2;
     alpha = PI/24;
-    z0 = 2;
+    z0 = 0;
     shape = createShape(ELLIPSE, 0, 0, 1, 1);
     geometry = new PShape();
     dirty = true;
@@ -89,67 +89,13 @@ class Torus {
       );
 
     //final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
-   final float f = pow(exp(1.0), alpha*t);  // Edit: 30.05.18
+    final float f = pow(exp(1.0), alpha*t);  // Edit: 30.05.18
     matrix.scale(f, f, f);
 
 
 
     return matrix;
   }
-
-
-  //// TODO: This is different for a shell
-  //private PVector position(float t) {
-  //  return new PVector(
-  //    radius * cos(t), 
-  //    radius * sin(t), 
-  //    0
-  //    );
-  //}
-
-  //// TODO: This is different for a shell
-  //private PVector derivate1(float t) {
-  //  return new PVector(
-  //    - radius * sin(t), 
-  //    radius * cos(t), 
-  //    0
-  //    );
-  //}
-
-  //// TODO: This is different for a shell
-  //private PVector derivate2(float t) {
-  //  return new PVector(
-  //    - radius * cos(t), 
-  //    - radius * sin(t), 
-  //    0
-  //    );
-  //}
-
-  //private PMatrix3D frenet(float t) {
-
-  //  // Translate
-  //  PMatrix3D matrix = new PMatrix3D();
-  //  final PVector pos = position(t);
-  //  matrix.translate(pos.x, pos.y, pos.z);
-
-  //  // Rotate
-  //  final PVector e0 = derivate1(t).normalize();
-  //  final PVector e2 = e0.cross(derivate2(t)).normalize();
-  //  final PVector e1 = e2.cross(e0);
-  //  matrix.apply(
-  //    e2.x, e1.x, e0.x, 0, 
-  //    e2.y, e1.y, e0.y, 0, 
-  //    e2.z, e1.z, e0.z, 0, 
-  //    0, 0, 0, 1
-  //    );
-
-  //  // Scale
-  //  final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
-  //  matrix.scale(f, f, f);
-
-  //  return matrix;
-  //}
-
 
   private void extrudeVertices() {
 
@@ -161,25 +107,26 @@ class Torus {
     // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix.
     // Hint: When looping over the shape vertices, use only use shape vertices with a vertex code of "VERTEX"
 
-    for (int i = 0; i <= segments; i++) { // For each ring,  
+    for (int i = 0; i < segments; i++) { // For each ring,  
       float t = float(i)/segments * turns * 2*PI; 
       PVector pos = position(t);
-
-      //DEBUG: Path-only
-      //vertex.add(pos);
-      //vertexNormal.add(pos);
+      
+      line(0,0,0,pos.x,pos.y,pos.z);
 
       PMatrix3D fre = frenet(t);
-      for (int j = 0; j< shape.getVertexCount()-1; j++) { // take each shape vertex
-        PVector v = shape.getVertex(j); 
-        if (shape.getVertexCode(j) == VERTEX) {
-          PVector modelV = new PVector(); // and transform it into model coordinates by using the frenet matrix.
-          fre.mult(v, modelV);
-          // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
-          vertex.add(modelV);
-          vertexNormal.add((new PVector(modelV.x - pos.x,modelV.y - pos.y,modelV.z - pos.z)).normalize());
-        }
+      //skip shape.getVertex(0); since it's 0,0,0
+      for (int j = 0; j< shape.getVertexCount(); j++) { // take each shape vertex
+        PVector v = shape.getVertex(j);
+        PVector modelV = new PVector(); // and transform it into model coordinates by using the frenet matrix.
+        fre.mult(v, modelV);
+        // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
+        vertex.add(modelV);
+        vertexNormal.add((new PVector(modelV.x - pos.x, modelV.y - pos.y, modelV.z - pos.z)).normalize());
+      //println(modelV);
+
       }
+      //        println(pos);
+      //println("-----");
     }
   }
 
@@ -193,22 +140,23 @@ class Torus {
     //Hint: Front facing polygons are in CCW vertex order (openGL default)
 
     int shapeVCount = vertex.size()/segments;
-    for (int seg = 0; seg < segments - 1; seg++) {
+    for (int seg = 0; seg < segments-1; seg++) {
       int segOffset = seg*shapeVCount;
-      for (int j = 0; j <  shapeVCount; j++) {
+      for (int j = segOffset; j < segOffset+ shapeVCount-1; j++) {
         Integer[] faceVerts = new Integer[]{          
-          segOffset + (j % shapeVCount), 
-          segOffset + ((j + 1) % shapeVCount), 
-          segOffset + shapeVCount + ((j + 1) % shapeVCount), 
-          segOffset + shapeVCount + (j % shapeVCount)};
+          j, 
+          j + 1, 
+          shapeVCount + j + 1, 
+          shapeVCount + j};
         face.add(faceVerts);
       }
+      Integer[] closingFaceVerts = new Integer[]{          
+        segOffset + shapeVCount -1, 
+        segOffset, 
+        segOffset + shapeVCount, 
+        segOffset + shapeVCount + shapeVCount - 1};
+      face.add(closingFaceVerts);
     }
-    //DEBUG: Parh-only
-    //for (int s = 0; s< segments/4; s++) {
-    //  int sI = 4*s;
-    //  face.add(new Integer[]{sI+0, sI+1, sI+3, sI+2});
-    //}
   }
 
   private void create() {
@@ -261,6 +209,26 @@ class Torus {
 
   public Torus radius(float radius) { 
     this.radius = radius;
+    dirty = true;
+    return this;
+  }
+
+  public float alpha() { 
+    return alpha;
+  }
+
+  public Torus alpha(float alpha) { 
+    this.alpha = alpha;
+    dirty = true;
+    return this;
+  }
+
+  public float z0() { 
+    return z0;
+  }
+
+  public Torus z0(float z0) { 
+    this.z0 = z0;
     dirty = true;
     return this;
   }

@@ -19,13 +19,14 @@ void setup() {
   perspective(50, float(width)/float(height), 0.0001, 100000);
 
   // Init shader
-  shader = loadShader("fragment.glsl", "vertex.glsl"); 
-  shader.set("color", 0.5, 0.9, 0.8);
-
+  shader = loadShader("fragment.glsl", "vertex.glsl");
   // Define extruded object
-  PShape path = createShape(ELLIPSE, 0, 0, 1, 1);
-  object = new Torus().radius(0.5).segments(100).shape(path).turns(2);
+  PShape path = createShape(ELLIPSE, 0, 0, 1, 3);
+  //path = createShape(TRIANGLE,2,1,0,0,0,1);
+  object = new Torus().radius(1.5).segments(100).shape(path).turns(2).z0(2.66).alpha(PI/48);
+  //object = new Torus().radius(1).segments(100).shape(path).turns(2).z0(2.4).alpha(PI/48);
 }
+
 
 void draw() {
 
@@ -40,17 +41,23 @@ void draw() {
   shininess(128);
   specular(255, 255, 255);
 
-  // Draw shell
-  //shader(shader);
-  shape(object.geometry());
-  /*
-  stroke(1);
-  for (int i=0; i< object.vertex.size(); ++i) {
+  lights();
 
-    PVector v= object.vertex.get(i);
-    PVector n= object.vertexNormal.get(i);
-   // n.mult(0.5);
-    line(v.x, v.y, v.z, v.x+n.x*0.1, v.y+n.y*0.1, v.z+n.z*0.1);
-     
-  }*/
+  //object.turns(object.turns +.001);
+
+  // Draw shell
+  shader(shader);
+  shape(object.geometry());
+
+  //stroke(1);
+  //for (int i=0; i< object.vertex.size(); ++i) {
+  //  PVector v= object.vertex.get(i);
+  //  PVector n= object.vertexNormal.get(i);
+  //  // n.mult(0.5);
+  //  float l = 0.1;
+  //  line(v.x, v.y, v.z, v.x+n.x*l, v.y+n.y*l, v.z+n.z*l);
+  //}
+  //line(0, 0, 0, 1, 0, 0);
+  //line(0, 0, 0, 0, 4, 0);
+  //line(0, 0, 0, 0, 0, 10);
 }  
