@@ -34,7 +34,7 @@ void draw() {
   noStroke();  // Comment out to see wireframed
 
   // Set lights
-  ambientLight(250, 250, 20);
+  ambientLight(20, 20, 20);
   lightSpecular(255, 255, 255);  
   float[] camPos = cam.getPosition();
   directionalLight(204, 204, 204, -camPos[0], -camPos[1], -camPos[2]);
@@ -48,7 +48,8 @@ void draw() {
   shape(object.geometry());
 
   // Draw shell  
-  shader.set("color", 0.5, 0.5, 0.5);
+  shader.set("plasmaratio", 0.1);
+  shader.set("plasmazoomout", 100.0);
   shader(shader);
 
   stroke(1);
@@ -61,9 +62,9 @@ void draw() {
   //}
   //println();
   //color(255,0,0);
-  stroke(1);
-  line(0, 0, 0, 10, 0, 0);
-  line(0, 0, 0, 0, 10, 0);
-  line(0, 0, 0, 0, 0, 10);
+  //stroke(1);
+  //line(0, 0, 0, 10, 0, 0);
+  //line(0, 0, 0, 0, 10, 0);
+  //line(0, 0, 0, 0, 0, 10);
   
 }  

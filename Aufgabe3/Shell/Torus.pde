@@ -121,7 +121,7 @@ class Torus {
         // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
         vertex.add(modelV);
         vertexNormal.add((new PVector(modelV.x - pos.x, modelV.y - pos.y, modelV.z - pos.z)).normalize());
-        uvs.add(new Float[]{random(1), random(1)});
+        uvs.add(new Float[]{float(i)/segments, float(j)/shape.getVertexCount()});
       }
     }
   }
@@ -170,7 +170,7 @@ class Torus {
         final PVector n = vertexNormal.get(quad[j]);
         geometry.normal(n.x, n.y, n.z);
         final PVector v = vertex.get(quad[j]);
-        final float[] uv = uvs.get(quad[j]);
+        final Float[] uv = uvs.get(quad[j]);
         geometry.vertex(v.x, v.y, v.z, uv[0], uv[1]);
       }
     }    
