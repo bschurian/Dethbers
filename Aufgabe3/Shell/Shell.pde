@@ -22,8 +22,9 @@ void setup() {
   shader = loadShader("fragment.glsl", "vertex.glsl");
   // Define extruded object
   PShape path = createShape(ELLIPSE, 0, 0, 1, 1);
-  //path = createShape(TRIANGLE,2,1,0,0,0,1);
-  object = new Torus().radius(.5).segments(100).shape(path).turns(4).z0(2.55).alpha(PI/48);
+  //path = createShape(TRIANGLE, -2,0, -1,0, -2,-1);
+  //path = createShape(RECT, 1,1,2,2);
+  object = new Torus().radius(.5).segments(300).shape(path).turns(4).z0(2.55).alpha(PI/48);
 }
 
 
@@ -39,7 +40,7 @@ void draw() {
   directionalLight(204, 204, 204, -camPos[0], -camPos[1], -camPos[2]);
   //directionalLight(0, 255, 0, 1, 0, 0);
   shininess(128);
-  specular(255, 255, 0);
+  specular(255, 255, 255);
 
   //lights();
 
@@ -47,19 +48,22 @@ void draw() {
   shape(object.geometry());
 
   // Draw shell  
-  shader.set("color", 0.2,0.5,0.5);
+  shader.set("color", 0.5, 0.5, 0.5);
   shader(shader);
 
-  //stroke(1);
-  for (int i=0; i< object.vertex.size(); i+=7) {
-    println(object.geometry.getTextureU(i));
+  stroke(1);
+  //for (int i=0; i< object.vertex.size(); i++) {
+  //  println(object.vertex.get(i));
   //  PVector v= object.vertex.get(i);
   //  PVector n= object.vertexNormal.get(i);
   //  float l = 0.1;
   //  line(v.x, v.y, v.z, v.x+n.x*l, v.y+n.y*l, v.z+n.z*l);
-  }
+  //}
+  //println();
   //color(255,0,0);
-  //line(0, 0, 0, 10, 0, 0);
-  //line(0, 0, 0, 0, 10, 0);
-  //line(0, 0, 0, 0, 0, .5);
+  stroke(1);
+  line(0, 0, 0, 10, 0, 0);
+  line(0, 0, 0, 0, 10, 0);
+  line(0, 0, 0, 0, 0, 10);
+  
 }  

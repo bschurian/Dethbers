@@ -1,4 +1,4 @@
- //<>// //<>//
+//<>// //<>//
 import java.util.*;
 
 class Torus {
@@ -14,7 +14,7 @@ class Torus {
   // Stores geometry
   Vector<PVector> vertex;
   Vector<PVector> vertexNormal;
-  Vector<Float[]> textureCoord;
+  Vector<Float[]> uvs;
   Vector<Integer[]> face;  // quads (four indices per face)
 
   // Used for lazy generation of geometry
@@ -33,8 +33,6 @@ class Torus {
     dirty = true;
   }
 
-  // TODO: This is different for a shell
-  // Eidt: 30.05.18
   private PVector position(float t) {
 
     float e = pow(exp(1), alpha*t);
@@ -46,8 +44,6 @@ class Torus {
     return result.mult(e);
   }
 
-  // TODO: This is different for a shell 
-  // Eidt: 30.05.18
   private PVector derivate1(float t) {
     float e = pow(exp(1.0), alpha*t); 
 
@@ -58,8 +54,6 @@ class Torus {
       )).mult(e);
   }
 
-  // TODO: This is different for a shell
-  // Eidt: 30.05.18
   private PVector derivate2(float t) {
     float e = pow(exp(1.0), alpha*t); 
     return new PVector( 
@@ -89,8 +83,7 @@ class Torus {
       0, 0, 0, 1
       );
 
-    //final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell
-    final float f = pow(exp(1.0), alpha*t);  // Edit: 30.05.18
+    final float f = pow(exp(1.0), alpha*t);
     matrix.scale(f, f, f);
 
 
@@ -103,7 +96,7 @@ class Torus {
     // These need to be filled
     vertex = new Vector<PVector>();
     vertexNormal = new Vector<PVector>();
-    textureCoord = new Vector<Float[]>();
+    uvs = new Vector<Float[]>();
 
     // Go along the path and subdivide it into rings. Use the position() method to do this.
     // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix.
@@ -112,12 +105,15 @@ class Torus {
     for (int i = 0; i < segments; i++) { // For each ring,  
       float t = float(i)/segments * turns * 2*PI; 
       PVector pos = position(t);
-      
-      line(0,0,0,pos.x,pos.y,pos.z);
+
+      line(0, 0, 0, pos.x, pos.y, pos.z);
 
       PMatrix3D fre = frenet(t);
       //TODO: find generic approach for all PShapes
       //skip shape.getVertex(0); since it's 0,0,0 ONLY FOR ELLIPSE
+      //************************************************
+      //v change j = 0 or j=1 For Triangles or ellipsesis
+      //************************************************
       for (int j = 1; j< shape.getVertexCount(); j++) { // take each shape vertex
         PVector v = shape.getVertex(j);
         PVector modelV = new PVector(); // and transform it into model coordinates by using the frenet matrix.
@@ -125,7 +121,7 @@ class Torus {
         // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
         vertex.add(modelV);
         vertexNormal.add((new PVector(modelV.x - pos.x, modelV.y - pos.y, modelV.z - pos.z)).normalize());
-        textureCoord.add(new Float[]{random(1),random(1)});
+        uvs.add(new Float[]{random(1), random(1)});
       }
     }
   }
@@ -174,17 +170,11 @@ class Torus {
         final PVector n = vertexNormal.get(quad[j]);
         geometry.normal(n.x, n.y, n.z);
         final PVector v = vertex.get(quad[j]);
-        geometry.vertex(v.x, v.y, v.z,1,1);
+        final float[] uv = uvs.get(quad[j]);
+        geometry.vertex(v.x, v.y, v.z, uv[0], uv[1]);
       }
     }    
     geometry.endShape();
-    
-    //for (int i = 0; i < segments; i++) { // For each ring,  
-    //  for (int j = 1; j< shape.getVertexCount(); j++) { // take each shape vertex
-    //    geometry.setTextureUV(i*shape.getVertexCount()+j,1.0,random(1.0));
-    //  }
-    //}
-
 
     dirty = false;
   }

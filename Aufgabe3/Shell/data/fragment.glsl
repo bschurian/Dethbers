@@ -32,18 +32,18 @@ void main() {
   vec3 specular = vec3(0);
 
   // Ambient light
-  ambient = lightAmbient[0] * color;  //ambient
+  ambient = lightAmbient[0];  //ambient
 
   float diffuseIntensity = dot(n, l);
   if (diffuseIntensity > 0.0) {
-    diffuse = lightDiffuse[1] * diffuseIntensity * color;
+    diffuse = lightDiffuse[1] * diffuseIntensity;
   }
   
   vec3 r = normalize(reflect(l, n));
   float specularIntensity = pow(max( dot(r,-e), 0.0), shininess_);
-  specular = lightSpecular[1] * specularIntensity * color;
+  specular = lightSpecular[1] * specularIntensity;
 
-  vec3 objectColor = ambient + diffuse + specular;
+  vec3 objectColor = (ambient + diffuse + specular) * color;
   
   //gl_FragColor = vec4(objectColor, 1.0);
   gl_FragColor = vec4(UV.x, UV.y, 0, 1.0);
