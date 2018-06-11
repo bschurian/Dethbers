@@ -11,6 +11,9 @@ in float shininess;
 
 in vec4 position;
 in vec3 normal;
+in vec2 texCoord;
+
+out vec2 UV;
 
 out vec3 normal_;
 out vec3 light_;
@@ -21,7 +24,12 @@ out vec4 specular_;
 out float shininess_;
 
 void main() {
+
+
   gl_Position = transform * position;
+  
+  UV = texCoord;
+  
   normal_ = normalMatrix * normal;
   //normal_ = normal;
   light_ = -lightNormal[1];

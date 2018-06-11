@@ -51,12 +51,13 @@ void draw() {
   shader(shader);
 
   //stroke(1);
-  //for (int i=0; i< object.vertex.size(); i+=7) {
+  for (int i=0; i< object.vertex.size(); i+=7) {
+    println(object.geometry.getTextureU(i));
   //  PVector v= object.vertex.get(i);
   //  PVector n= object.vertexNormal.get(i);
   //  float l = 0.1;
   //  line(v.x, v.y, v.z, v.x+n.x*l, v.y+n.y*l, v.z+n.z*l);
-  //}
+  }
   //color(255,0,0);
   //line(0, 0, 0, 10, 0, 0);
   //line(0, 0, 0, 0, 10, 0);

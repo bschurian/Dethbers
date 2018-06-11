@@ -1,4 +1,4 @@
- //<>//
+ //<>// //<>//
 import java.util.*;
 
 class Torus {
@@ -14,6 +14,7 @@ class Torus {
   // Stores geometry
   Vector<PVector> vertex;
   Vector<PVector> vertexNormal;
+  Vector<Float[]> textureCoord;
   Vector<Integer[]> face;  // quads (four indices per face)
 
   // Used for lazy generation of geometry
@@ -102,6 +103,7 @@ class Torus {
     // These need to be filled
     vertex = new Vector<PVector>();
     vertexNormal = new Vector<PVector>();
+    textureCoord = new Vector<Float[]>();
 
     // Go along the path and subdivide it into rings. Use the position() method to do this.
     // For each ring, take each shape vertex and transform it into model coordinates by using the frenet matrix.
@@ -123,6 +125,7 @@ class Torus {
         // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
         vertex.add(modelV);
         vertexNormal.add((new PVector(modelV.x - pos.x, modelV.y - pos.y, modelV.z - pos.z)).normalize());
+        textureCoord.add(new Float[]{random(1),random(1)});
       }
     }
   }
@@ -171,10 +174,17 @@ class Torus {
         final PVector n = vertexNormal.get(quad[j]);
         geometry.normal(n.x, n.y, n.z);
         final PVector v = vertex.get(quad[j]);
-        geometry.vertex(v.x, v.y, v.z);
+        geometry.vertex(v.x, v.y, v.z,1,1);
       }
     }    
     geometry.endShape();
+    
+    //for (int i = 0; i < segments; i++) { // For each ring,  
+    //  for (int j = 1; j< shape.getVertexCount(); j++) { // take each shape vertex
+    //    geometry.setTextureUV(i*shape.getVertexCount()+j,1.0,random(1.0));
+    //  }
+    //}
+
 
     dirty = false;
   }

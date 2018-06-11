@@ -5,9 +5,10 @@ uniform vec3 lightAmbient[8];
 uniform vec3 lightDiffuse[8];
 uniform vec3 lightSpecular[8];
 
+in vec2 UV;
+
 in vec4 specular_;
 in float shininess_;
-
 
 in vec3 normal_;  //n
 in vec3 light_;  //l
@@ -43,9 +44,7 @@ void main() {
   specular = lightSpecular[1] * specularIntensity * color;
 
   vec3 objectColor = ambient + diffuse + specular;
-
-  //gl_FragColor = vec4(specularIntensity,0,0, 1.0);
-  //gl_FragColor = vec4(l, 1.0);
-  //gl_FragColor = vec4(lightSpecular[1] * specularIntensity, 1.0);
-  gl_FragColor = vec4(objectColor, 1.0);
+  
+  //gl_FragColor = vec4(objectColor, 1.0);
+  gl_FragColor = vec4(UV.x, UV.y, 0, 1.0);
 }
