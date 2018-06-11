@@ -23,7 +23,9 @@ out float shininess_;
 void main() {
   gl_Position = transform * position;
   normal_ = normalMatrix * normal;
+  //normal_ = normal;
   light_ = -lightNormal[1];
+  //light_ = -vec3(0,1,0);
   camera_ = normalize(-vec3(modelview * position));
   position_ = position;
 

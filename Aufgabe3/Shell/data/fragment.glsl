@@ -20,31 +20,32 @@ in vec4 position_;  //r ?
 
 void main() {
 
-  // Ambient light
-  vec3 objectColor = lightAmbient[0] * color;  //ambient
-
   // Receives directional light?
   //Normalize light
   vec3 l = normalize(light_);
   vec3 e = normalize(camera_);
   vec3 n = normalize(normal_);
-  vec3 h = normalize(e+l);
 
+  vec3 ambient = vec3(0);
   vec3 diffuse = vec3(0);
   vec3 specular = vec3(0);
-  vec3 ambient = vec3(0);
 
-  float shininess = pow(dot(n, h),1.0);
-  //float shininess = dot(n, h);
-  objectColor += lightSpecular[1] * shininess * color;
+  // Ambient light
+  ambient = lightAmbient[0] * color;  //ambient
 
-  float diffuseIntensity = dot(n, light_);
+  float diffuseIntensity = dot(n, l);
   if (diffuseIntensity > 0.0) {
-
-    // Diffuse light
-    objectColor += lightDiffuse[1] * diffuseIntensity * color;
+    diffuse = lightDiffuse[1] * diffuseIntensity * color;
   }
+  
+  vec3 r = normalize(reflect(l, n));
+  float specularIntensity = pow(max( dot(r,-e), 0.0), shininess_);
+  specular = lightSpecular[1] * specularIntensity * color;
 
+  vec3 objectColor = ambient + diffuse + specular;
 
-  gl_FragColor = vec4(normal_, 1.0);
+  //gl_FragColor = vec4(specularIntensity,0,0, 1.0);
+  //gl_FragColor = vec4(l, 1.0);
+  //gl_FragColor = vec4(lightSpecular[1] * specularIntensity, 1.0);
+  gl_FragColor = vec4(objectColor, 1.0);
 }

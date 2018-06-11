@@ -114,19 +114,16 @@ class Torus {
       line(0,0,0,pos.x,pos.y,pos.z);
 
       PMatrix3D fre = frenet(t);
-      //skip shape.getVertex(0); since it's 0,0,0
-      for (int j = 0; j< shape.getVertexCount(); j++) { // take each shape vertex
+      //TODO: find generic approach for all PShapes
+      //skip shape.getVertex(0); since it's 0,0,0 ONLY FOR ELLIPSE
+      for (int j = 1; j< shape.getVertexCount(); j++) { // take each shape vertex
         PVector v = shape.getVertex(j);
         PVector modelV = new PVector(); // and transform it into model coordinates by using the frenet matrix.
         fre.mult(v, modelV);
         // Store each final vertex position in the given vector and calculate it's normal. Store the normal, too. 
         vertex.add(modelV);
         vertexNormal.add((new PVector(modelV.x - pos.x, modelV.y - pos.y, modelV.z - pos.z)).normalize());
-      //println(modelV);
-
       }
-      //        println(pos);
-      //println("-----");
     }
   }
 
