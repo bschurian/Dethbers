@@ -1,6 +1,9 @@
 // Material properties
 uniform float plasmaratio;
 uniform float plasmazoomout;
+uniform float uOffset;
+uniform float vOffset;
+uniform float t;
 
 uniform vec3 lightAmbient[8];
 uniform vec3 lightDiffuse[8];
@@ -151,7 +154,7 @@ void main() {
   //seashell color orangey
   vec3 white = vec3(0.9764705882352941, 0.9607843137254902, 0.9176470588235294);
   vec3 orange = vec3(0.8862745098039215, 0.596078431372549, 0.30196078431372547);
-  vec3 plasma = mix(orange, white, snoise(vec3(UV.x*plasmazoomout,UV.y*plasmazoomout*plasmaratio,0)));
+  vec3 plasma = mix(orange, white, snoise(vec3(UV.x*plasmazoomout+uOffset,UV.y*plasmazoomout*plasmaratio+vOffset,t)));
   //plasma += vec3(0.7,0.3,0.3)*pow(snoise(vec3(UV.x*plasmazoomout+100,UV.y*plasmazoomout*plasmaratio+100,0)),16)*2;
   
   vec3 objectColor = (ambient + diffuse + specular) * plasma;

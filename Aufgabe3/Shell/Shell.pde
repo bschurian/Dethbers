@@ -50,6 +50,10 @@ void draw() {
   // Draw shell  
   shader.set("plasmaratio", 0.1);
   shader.set("plasmazoomout", 100.0);
+  shader.set("uOffset", -millis()/5000.0);
+  shader.set("vOffset", -millis()/10000.0);
+  //shader.set("t", 0.0);
+  shader.set("t", millis()/9000.0);
   shader(shader);
 
   stroke(1);
@@ -66,5 +70,4 @@ void draw() {
   //line(0, 0, 0, 10, 0, 0);
   //line(0, 0, 0, 0, 10, 0);
   //line(0, 0, 0, 0, 0, 10);
-  
 }  
