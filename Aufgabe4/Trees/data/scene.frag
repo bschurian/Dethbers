@@ -1,14 +1,13 @@
-
-
+uniform vec3 baseColor;
 uniform sampler2D shadowMap;
 
-in vec4 color_;
+//in vec4 color_;
 in vec4 shadowMapCoordinates;
 in float lambert;
 
 void main(void) {
 
-    gl_FragColor = vec4(color_.rgb * lambert, color_.a);
+    gl_FragColor = vec4(baseColor.rgb * lambert, 1);
 
     // Only render shadow if fragment is facing the light
     if (lambert > 0.0) {

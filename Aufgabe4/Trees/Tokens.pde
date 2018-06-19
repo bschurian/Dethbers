@@ -6,7 +6,7 @@
 
 // Provides tokens with a call() method
 abstract class Token {
-  public abstract void call();
+  public abstract void call(final Turtle turtle);
 }
 
 // This token will be replaced in production system
@@ -35,7 +35,7 @@ class A extends Token {
     this.w = w;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
   }
 
   public String toString() {
@@ -60,7 +60,7 @@ class Weight extends Token {
     this.w = w;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.weight(w);
   }
 
@@ -86,7 +86,7 @@ class Colour extends Token {
     this.c = c;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.colour(c);
   }
 
@@ -112,7 +112,7 @@ class Forward extends Token {
     this.s = s;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.forward(s);
   }
   public String toString() {
@@ -137,7 +137,7 @@ class Turn extends Token {
     a = angle;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.turnLeft(a);
   }
   public String toString() {
@@ -162,7 +162,7 @@ class Roll extends Token {
     a = angle;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.rollLeft(a);
   }
   public String toString() {
@@ -172,7 +172,7 @@ class Roll extends Token {
 
 // Remember current coordinate system
 class Push extends Token {
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.push();
   }
   public String toString() {
@@ -182,7 +182,7 @@ class Push extends Token {
 
 // Restore current coordinate system
 class Pop extends Token {
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.pop();
   }
   public String toString() {
