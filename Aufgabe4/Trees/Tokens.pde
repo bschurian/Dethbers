@@ -149,6 +149,29 @@ class Roll extends Token {
   }
 }
 
+//Creates an Apple
+class Apple extends Token {
+
+  private float r;
+
+  public Apple(float radius) {
+    r = radius;
+  }
+
+  public float r() {
+    return r;
+  }
+
+  public void r(float radius) {
+    r = radius;
+  }
+
+  public void call() {
+    turtle.apple(r);
+  }
+}
+
+
 // Remember current coordinate system
 class Push extends Token {
   public void call() {

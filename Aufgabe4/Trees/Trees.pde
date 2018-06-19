@@ -33,22 +33,29 @@ void buildTree() {
   // Axiom
   tokens[current].add(new A(100, config.om0));
 
-  for (int i = 0; i <= config.n; i++) {
+  for (int i = 0; i <= 2; i++) {
     tokens[next] = new ArrayList<Token>();
     for (Token t : tokens[current]) {
       if (!(t instanceof A)) {
         tokens[next].add(t);
-      } else {
+      } 
+      else {
         A a = (A) t;
-        if(a.s >= config.min){
+        if(a.s >= config.min && random(1)>0.5){
           Token[] newTokens = new Token[]{new Weight(a.w),new Forward(a.s),new Push(), new Turn(config.a1),new Roll(config.fi1),new A(a.s * config.r1, a.w * pow(config.q, config.e)),new Pop(),new Push(), new Turn(config.a2),new Roll(config.fi2),new A(a.s * config.r2, a.w * pow(1-config.q, config.e)),new Pop()};
           for(Token token: newTokens){
             tokens[next].add(token);
           }      
         }
+        {
+        float r = random(5, 10); 
+        tokens[next].add(new Apple(r));
+
+        }
       }
     }
     tokens[current] = tokens[next];
+    println(tokens[current]);
   }
 
   // Make geometry

@@ -14,7 +14,8 @@ class Turtle {
   private Stack<PMatrix3D> stack = new Stack<PMatrix3D>(); // Stack of former coordinate systems
   
   private PShape root; // The PShape where all children are added to
-
+  PShape apple;
+  
   // Never construct a turtle before setup()
   public Turtle() {
     reset();
@@ -114,6 +115,14 @@ class Turtle {
   public void weight(float weight) {
     this.weight = weight;
   }
+  
+  //Apple
+  public void apple(float r) {
+    
+    apple = createShape(SPHERE, r);
+    root.addChild(apple);
+  }
+  
   
   // Stores current coordinate system in stack
   void push() {
