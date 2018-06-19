@@ -33,7 +33,7 @@ void buildTree() {
   // Axiom
   tokens[current].add(new A(100, config.om0));
 
-  for (int i = 0; i <= config.n; i++) {
+  for (int i = 0; i <= 2; i++) {
     tokens[next] = new ArrayList<Token>();
     for (Token t : tokens[current]) {
       if (!(t instanceof A)) {
@@ -49,6 +49,12 @@ void buildTree() {
       }
     }
     tokens[current] = tokens[next];
+    String s = "";
+    for(Token t: tokens[current]){
+      s+=t.toString();    
+    }
+    println(s);
+    println();
   }
 
   // Make geometry

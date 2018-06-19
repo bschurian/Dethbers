@@ -37,6 +37,10 @@ class A extends Token {
 
   public void call() {
   }
+
+  public String toString() {
+    return "A("+this.s+", "+this.w+")";
+  }
 }
 
 // Changes branch "thickness"
@@ -58,6 +62,10 @@ class Weight extends Token {
 
   public void call() {
     turtle.weight(w);
+  }
+
+  public String toString() {
+    return "!("+this.w+")";
   }
 }
 
@@ -81,6 +89,10 @@ class Colour extends Token {
   public void call() {
     turtle.colour(c);
   }
+
+  public String toString() {
+    return "C("+this.c+")";
+  }
 }
 
 // Creates a branch
@@ -102,6 +114,9 @@ class Forward extends Token {
 
   public void call() {
     turtle.forward(s);
+  }
+  public String toString() {
+    return "F("+this.s+")";
   }
 }
 
@@ -125,6 +140,9 @@ class Turn extends Token {
   public void call() {
     turtle.turnLeft(a);
   }
+  public String toString() {
+    return "+("+this.a+")";
+  }
 }
 
 // Rolls the turtle
@@ -147,6 +165,9 @@ class Roll extends Token {
   public void call() {
     turtle.rollLeft(a);
   }
+  public String toString() {
+    return "/("+this.a+")";
+  }
 }
 
 // Remember current coordinate system
@@ -154,11 +175,17 @@ class Push extends Token {
   public void call() {
     turtle.push();
   }
+  public String toString() {
+    return "[";
+  }
 }
 
 // Restore current coordinate system
 class Pop extends Token {
   public void call() {
     turtle.pop();
+  }
+  public String toString() {
+    return "]";
   }
 }
