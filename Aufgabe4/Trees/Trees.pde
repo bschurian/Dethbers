@@ -106,8 +106,10 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
       if (!(t instanceof A)) {
         tokens[next].add(t);
       } else {
-        float r = random(5, 10); 
-        tokens[next].add(new Apple(r));
+        if (random(0, 2) >=1) {
+          float r = random(5, 10); 
+          tokens[next].add(new Apple(r));
+        }
       }
     }
 
@@ -199,6 +201,8 @@ public void render(PGraphics canvas) {
   //sceneShader.set(
   sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
   turtle1.draw(canvas);
+  // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
+  // turtle1.fruitDraw(g);
   sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
@@ -229,13 +233,17 @@ public void renderShadowMap() {
 
 public void renderScene() {
   background(100, 100, 100);
-  
-
   directionalLight(255, 255, 255, light.x, light.y, light.z);
-  render(g);
-  
-    sceneShader.set("baseColor", 1.0, 0.0, 0.0, 0.3);
+
+
+  g.pushMatrix();
+  g.scale(0.2);
+  sceneShader.set("baseColor", 1.0, 0.5, 0.5, 0.1);
   turtle1.fruitDraw(g);
+  g.popMatrix();
+
+
+  render(g);
 }
 public void renderEarth() {
   // Earth
