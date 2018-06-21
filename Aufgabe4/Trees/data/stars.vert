@@ -16,6 +16,8 @@ out vec2 UV;
 // We do calculate these
 out vec4 color_;  // vertex color
 
+
+
 void main() {
 
     gl_Position = transform * vertex;

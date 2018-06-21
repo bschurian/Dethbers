@@ -83,11 +83,10 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
 
 
     tokens[current] = tokens[next];
-
-    String s = "";
-    for (Token t : tokens[current]) {
-      s+=t.toString();
-    }
+    //String s = "";
+    //for (Token t : tokens[current]) {
+    //  s+=t.toString();
+    //}
     //println(s);
     //println();
   }
@@ -141,6 +140,7 @@ void setup() {
 
   //fullScreen(P3D);
   size(800, 600, P3D);
+  blendMode(BLEND);
 
   // Setup camera
   cam = new PeasyCam(this, 300);
@@ -247,7 +247,7 @@ public void renderScene() {
 }
 public void renderEarth() {
   // Earth
-  earthShader.set("baseColor", 0.0, 1.0, 0.0 );
+//  earthShader.set("baseColor", 0.0, 1.0, 0.0 );
   earthShader.set("alpha", earthAlpha );
   int r = 200;
   g.translate(0, r);

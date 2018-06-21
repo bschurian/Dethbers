@@ -35,7 +35,7 @@ class Configuration {
     this.q = random(0.40f, 0.60f);
     this.e = random(0.0f, 0.50f);
     this.min = random(0.0f, 0.30f);
-    this.n = int(random(8, 15)); // Some of these can get large (!) - you may run out of heap space
+    this.n = int(random(6, 9)); // Some of these can get large (!) - you may run out of heap space
   }
 }
 
