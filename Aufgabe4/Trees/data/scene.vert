@@ -3,7 +3,7 @@
 uniform mat4 transform;
 uniform mat4 modelview;
 uniform mat3 normalMatrix;
-uniform vec3 baseColor;
+uniform vec4 baseColor;
 
 uniform vec3 lightNormal;
 

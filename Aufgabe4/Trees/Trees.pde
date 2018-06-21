@@ -60,6 +60,7 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
   // Axiom
   tokens[current].add(new A(100, config.om0));
 
+
   //for (int i = 0; i <= 5; i++) {
   for (int i = 0; i <= config.n; i++) {
     tokens[next] = new ArrayList<Token>();
@@ -73,10 +74,16 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
           for (Token token : newTokens) {
             tokens[next].add(token);
           }
+        } else {
+          float r = random(5, 10); 
+          tokens[next].add(new Apple(r));
         }
       }
     }
+
+
     tokens[current] = tokens[next];
+
     String s = "";
     for (Token t : tokens[current]) {
       s+=t.toString();
@@ -85,11 +92,28 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
     //println();
   }
 
+
+
   // Make geometry
   turtle.reset();
-  if (turn) {
+  if (isRoot) {
     Token t = new Turn(PI);
     t.call(turtle);
+  } else {
+    //Apple
+    tokens[next] = new ArrayList<Token>();
+    for (Token t : tokens[current]) {
+      if (!(t instanceof A)) {
+        tokens[next].add(t);
+      } else {
+        if (random(0, 2) >=1) {
+          float r = random(5, 10); 
+          tokens[next].add(new Apple(r));
+        }
+      }
+    }
+
+    tokens[current] = tokens[next];
   }
   for (Token t : tokens[current]) {
     t.call(turtle);
@@ -152,22 +176,22 @@ void setup() {
 
   // Build Tree
   turtle1 = new Turtle();
-  turn = false;
+  isRoot = false;
   //  config = config_g;
   //               Configuration(  r1,   r2,            a1,             a2,      fi1,                 fi2,            om0,    q,    e,  min,  n);
   config = new Configuration(0.9, 0.9, config_g.a1, config_g.a2, config_g.fi1, config_g.fi2, 70, config_g.q, config_g.e, config_g.min, config_g.n);
   buildTree(config, "main", turtle1);
   turtle2 = new Turtle();
-  turn = true;
+  isRoot = true;
   Configuration rootConfig;
   //               Configuration(  r1,   r2,            a1,             a2,      fi1,                 fi2,            om0,    q,    e,  min,  n);
   rootConfig = new Configuration(0.85, 0.8, QUARTER_PI*0.7, -QUARTER_PI*0.7, HALF_PI, -HALF_PI-QUARTER_PI, config.om0*1.1, 0.55, 0.6f, 0, 8);
   //rootConfig = config_g;
   buildTree(rootConfig, "root", turtle2);
-  turn = false;
+  isRoot = false;
 }
 
-boolean turn = true;
+boolean isRoot = true;
 
 public void render(PGraphics canvas) {
 
@@ -175,9 +199,11 @@ public void render(PGraphics canvas) {
   canvas.pushMatrix();
   canvas.scale(0.2);
   //sceneShader.set(
-  sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098 );
+  sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
   turtle1.draw(canvas);
-  sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274 );
+  // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
+  // turtle1.fruitDraw(g);
+  sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
 }
@@ -208,6 +234,15 @@ public void renderShadowMap() {
 public void renderScene() {
   background(100, 100, 100);
   directionalLight(255, 255, 255, light.x, light.y, light.z);
+
+
+  g.pushMatrix();
+  g.scale(0.2);
+  sceneShader.set("baseColor", 1.0, 0.5, 0.5, 0.1);
+  turtle1.fruitDraw(g);
+  g.popMatrix();
+
+
   render(g);
 }
 public void renderEarth() {
@@ -226,7 +261,7 @@ public void renderBackground() {
 }
 
 public void renderLightSource() {
-  sceneShader.set("baseColor", 0.95, 0.97, 1.0 );
+  sceneShader.set("baseColor", 0.95, 0.97, 1.0, 1.0 );
   pushMatrix();
   fill(255);
   translate(light.x*1.05, light.y*1.05, light.z*1.05);
