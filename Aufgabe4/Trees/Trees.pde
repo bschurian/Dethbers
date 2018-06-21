@@ -67,27 +67,21 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
     for (Token t : tokens[current]) {
       if (!(t instanceof A)) {
         tokens[next].add(t);
-      } 
-      else {
+      } else {
         A a = (A) t;
-
-//        if(a.s >= config.min && random(1)>0.5){
- //         Token[] newTokens = new Token[]{new Weight(a.w),new Forward(a.s),new Push(), new Turn(config.a1),new Roll(config.fi1),new A(a.s * config.r1, a.w * pow(config.q, config.e)),new Pop(),new Push(), new Turn(config.a2),new Roll(config.fi2),new A(a.s * config.r2, a.w * pow(1-config.q, config.e)),new Pop()};
- //         for(Token token: newTokens){
-
         if (a.s >= config.min) {
           Token[] newTokens = new Token[]{new Weight(a.w), new Forward(a.s), new Push(), new Turn(config.a1), new Roll(config.fi1), new A(a.s * config.r1, a.w * pow(config.q, config.e)), new Pop(), new Push(), new Turn(config.a2), new Roll(config.fi2), new A(a.s * config.r2, a.w * pow(1-config.q, config.e)), new Pop()};
           for (Token token : newTokens) {
             tokens[next].add(token);
           }
-        }
-        {
-        float r = random(5, 10); 
-        tokens[next].add(new Apple(r));
-
+        } else {
+          float r = random(5, 10); 
+          tokens[next].add(new Apple(r));
         }
       }
     }
+
+
     tokens[current] = tokens[next];
 
     String s = "";
@@ -98,11 +92,26 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
     //println();
   }
 
+
+
   // Make geometry
   turtle.reset();
-  if (turn) {
+  if (isRoot) {
     Token t = new Turn(PI);
     t.call(turtle);
+  } else {
+    //Apple
+    tokens[next] = new ArrayList<Token>();
+    for (Token t : tokens[current]) {
+      if (!(t instanceof A)) {
+        tokens[next].add(t);
+      } else {
+        float r = random(5, 10); 
+        tokens[next].add(new Apple(r));
+      }
+    }
+
+    tokens[current] = tokens[next];
   }
   for (Token t : tokens[current]) {
     t.call(turtle);
@@ -165,22 +174,22 @@ void setup() {
 
   // Build Tree
   turtle1 = new Turtle();
-  turn = false;
+  isRoot = false;
   //  config = config_g;
   //               Configuration(  r1,   r2,            a1,             a2,      fi1,                 fi2,            om0,    q,    e,  min,  n);
   config = new Configuration(0.9, 0.9, config_g.a1, config_g.a2, config_g.fi1, config_g.fi2, 70, config_g.q, config_g.e, config_g.min, config_g.n);
   buildTree(config, "main", turtle1);
   turtle2 = new Turtle();
-  turn = true;
+  isRoot = true;
   Configuration rootConfig;
   //               Configuration(  r1,   r2,            a1,             a2,      fi1,                 fi2,            om0,    q,    e,  min,  n);
   rootConfig = new Configuration(0.85, 0.8, QUARTER_PI*0.7, -QUARTER_PI*0.7, HALF_PI, -HALF_PI-QUARTER_PI, config.om0*1.1, 0.55, 0.6f, 0, 8);
   //rootConfig = config_g;
   buildTree(rootConfig, "root", turtle2);
-  turn = false;
+  isRoot = false;
 }
 
-boolean turn = true;
+boolean isRoot = true;
 
 public void render(PGraphics canvas) {
 
@@ -188,9 +197,9 @@ public void render(PGraphics canvas) {
   canvas.pushMatrix();
   canvas.scale(0.2);
   //sceneShader.set(
-  sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098 );
+  sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
   turtle1.draw(canvas);
-  sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274 );
+  sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
 }
@@ -220,8 +229,13 @@ public void renderShadowMap() {
 
 public void renderScene() {
   background(100, 100, 100);
+  
+
   directionalLight(255, 255, 255, light.x, light.y, light.z);
   render(g);
+  
+    sceneShader.set("baseColor", 1.0, 0.0, 0.0, 0.3);
+  turtle1.fruitDraw(g);
 }
 public void renderEarth() {
   // Earth
@@ -239,7 +253,7 @@ public void renderBackground() {
 }
 
 public void renderLightSource() {
-  sceneShader.set("baseColor", 0.95, 0.97, 1.0 );
+  sceneShader.set("baseColor", 0.95, 0.97, 1.0, 1.0 );
   pushMatrix();
   fill(255);
   translate(light.x*1.05, light.y*1.05, light.z*1.05);

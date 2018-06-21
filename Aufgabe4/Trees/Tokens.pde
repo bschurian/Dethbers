@@ -187,7 +187,7 @@ class Apple extends Token {
     r = radius;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.apple(r);
   }
 }
