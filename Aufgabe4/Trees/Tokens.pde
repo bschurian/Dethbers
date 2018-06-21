@@ -6,7 +6,7 @@
 
 // Provides tokens with a call() method
 abstract class Token {
-  public abstract void call();
+  public abstract void call(final Turtle turtle);
 }
 
 // This token will be replaced in production system
@@ -35,7 +35,11 @@ class A extends Token {
     this.w = w;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
+  }
+
+  public String toString() {
+    return "A("+this.s+", "+this.w+")";
   }
 }
 
@@ -56,8 +60,12 @@ class Weight extends Token {
     this.w = w;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.weight(w);
+  }
+
+  public String toString() {
+    return "!("+this.w+")";
   }
 }
 
@@ -78,8 +86,12 @@ class Colour extends Token {
     this.c = c;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.colour(c);
+  }
+
+  public String toString() {
+    return "C("+this.c+")";
   }
 }
 
@@ -100,8 +112,11 @@ class Forward extends Token {
     this.s = s;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.forward(s);
+  }
+  public String toString() {
+    return "F("+this.s+")";
   }
 }
 
@@ -122,8 +137,11 @@ class Turn extends Token {
     a = angle;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.turnLeft(a);
+  }
+  public String toString() {
+    return "+("+this.a+")";
   }
 }
 
@@ -144,8 +162,11 @@ class Roll extends Token {
     a = angle;
   }
 
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.rollLeft(a);
+  }
+  public String toString() {
+    return "/("+this.a+")";
   }
 }
 
@@ -174,14 +195,20 @@ class Apple extends Token {
 
 // Remember current coordinate system
 class Push extends Token {
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.push();
+  }
+  public String toString() {
+    return "[";
   }
 }
 
 // Restore current coordinate system
 class Pop extends Token {
-  public void call() {
+  public void call(final Turtle turtle) {
     turtle.pop();
+  }
+  public String toString() {
+    return "]";
   }
 }

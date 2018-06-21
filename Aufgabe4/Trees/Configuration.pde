@@ -39,15 +39,15 @@ class Configuration {
   }
 }
 
-final Configuration config_a = new Configuration(0.75f, 0.77f, 0.5759586532f, -0.5759586532f, 0.0f, 0.0f, 30.0f, 0.50f, 0.40f, 0.0f, 10);
-final Configuration config_b = new Configuration(0.65f, 0.71f, 0.471238898f, -1.1868238914f, 0.0f, 0.0f, 20.0f, 0.53f, 0.50f, 1.7f, 12);
-final Configuration config_c = new Configuration(0.50f, 0.85f, 0.436332313f, -0.2617993878f, PI, 0.0f, 20.0f, 0.45f, 0.50f, 0.5f, 9);
-final Configuration config_d = new Configuration(0.60f, 0.85f, 0.436332313f, -0.2617993878f, PI, PI, 20.0f, 0.45f, 0.50f, 0.0f, 10);
-final Configuration config_e = new Configuration(0.58f, 0.83f, 0.5235987756f, 0.2617993878f, 0.0f, PI, 20.0f, 0.40f, 0.50f, 1.0f, 11);
-final Configuration config_f = new Configuration(0.92f, 0.37f, 0.0f, 1.0471975512f, PI, 0.0f, 2.0f, 0.50f, 0.0f, 0.5f, 15);
-final Configuration config_g = new Configuration(0.8f, 0.8f, 0.5235987756f, -0.5235987756f, 2.3911010752f, 2.3911010752f, 30.0f, 0.5f, 0.5f, 0.0f, 10);
-final Configuration config_h = new Configuration(0.95f, 0.75f, 0.0872664626f, -0.5235987756f, -HALF_PI, HALF_PI, 40.0f, 0.60f, 0.45f, 25.0f, 12);
-final Configuration config_i = new Configuration(0.55f, 0.95f, -0.0872664626f, 0.5235987756f, 2.3911010752f, 2.3911010752f, 5.0f, 0.40f, 0.0f, 5.0f, 12);
+//final Configuration config_a = new Configuration(0.75f, 0.77f, 0.5759586532f, -0.5759586532f, 0.0f, 0.0f, 30.0f, 0.50f, 0.40f, 0.0f, 10);
+//final Configuration config_b = new Configuration(0.65f, 0.71f, 0.471238898f, -1.1868238914f, 0.0f, 0.0f, 20.0f, 0.53f, 0.50f, 1.7f, 12);
+//final Configuration config_c = new Configuration(0.50f, 0.85f, 0.436332313f, -0.2617993878f, PI, 0.0f, 20.0f, 0.45f, 0.50f, 0.5f, 9);
+//final Configuration config_d = new Configuration(0.60f, 0.85f, 0.436332313f, -0.2617993878f, PI, PI, 20.0f, 0.45f, 0.50f, 0.0f, 10);
+//final Configuration config_e = new Configuration(0.58f, 0.83f, 0.5235987756f, 0.2617993878f, 0.0f, PI, 20.0f, 0.40f, 0.50f, 1.0f, 11);
+//final Configuration config_f = new Configuration(0.92f, 0.37f, 0.0f, 1.0471975512f, PI, 0.0f, 2.0f, 0.50f, 0.0f, 0.5f, 15);
+//final Configuration config_g = new Configuration(0.8f, 0.8f, 0.5235987756f, -0.5235987756f, 2.3911010752f, 2.3911010752f, 30.0f, 0.5f, 0.5f, 0.0f, 10);
+//final Configuration config_h = new Configuration(0.95f, 0.75f, 0.0872664626f, -0.5235987756f, -HALF_PI, HALF_PI, 40.0f, 0.60f, 0.45f, 25.0f, 12);
+//final Configuration config_i = new Configuration(0.55f, 0.95f, -0.0872664626f, 0.5235987756f, 2.3911010752f, 2.3911010752f, 5.0f, 0.40f, 0.0f, 5.0f, 12);
 
-// The current configuration
-Configuration config = config_g;  // Default is a nice 3D tree
+//// The current configuration
+//Configuration config = config_g;  // Default is a nice 3D tree
