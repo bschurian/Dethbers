@@ -1,5 +1,6 @@
 import peasy.*;
 import java.util.Map;
+import java.util.stream.Stream;
 
 PVector light = new PVector();  // Light direction for shading
 int lDistance;
@@ -120,7 +121,7 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
   trees.put(treeName, tokens);
 }
 
-// Pressing any key results in a new tree
+// Pressing (almost) any key results in a new tree
 void keyReleased() {
   switch(keyCode) {
   case LEFT:
@@ -130,9 +131,18 @@ void keyReleased() {
     earthAlpha = min(earthAlpha+0.1, 1.0);
     break;
   default:
-    //config = new Configuration(247659);
+    //niceTree
+    //config = new Configuration(201602);
     config = new Configuration(millis());
     buildTree(config, "main", turtle1);
+    isRoot = true;
+    Configuration rootConfig;
+    //               Configuration(  r1,   r2,            a1,             a2,      fi1,                 fi2,            om0,    q,    e,  min,  n);
+    rootConfig = new Configuration(0.85, 0.8, QUARTER_PI*0.7, -QUARTER_PI*0.7, HALF_PI, -HALF_PI-QUARTER_PI, config.om0*1.1, 0.55, 0.6f, 0, 8);
+    //rootConfig = config_g;
+    println(rootConfig);    
+    buildTree(rootConfig, "root", turtle2);
+    isRoot = false;
   }
 }
 
@@ -165,7 +175,7 @@ void setup() {
   sceneShader = new PShader(this, "scene.vert", "scene.frag");
   shader(sceneShader);
   noStroke();
-  perspective(60 * DEG_TO_RAD, (float)width / height, 10, 3000);
+  perspective(60 * DEG_TO_RAD, (float)width / height, 10, 4000);
   // Init earth render
   earthShader = new PShader(this, "earth.vert", "earth.frag");
   // Init earth render
@@ -199,11 +209,13 @@ public void render(PGraphics canvas) {
   canvas.pushMatrix();
   canvas.scale(0.2);
   //sceneShader.set(
-  sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
+  //sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
+  sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
   turtle1.draw(canvas);
   // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
   // turtle1.fruitDraw(g);
-  sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
+  //sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
+  sceneShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
 }
@@ -232,23 +244,21 @@ public void renderShadowMap() {
 }
 
 public void renderScene() {
-  background(100, 100, 100);
   directionalLight(255, 255, 255, light.x, light.y, light.z);
-
-
+  render(g);
+}
+public void renderFruits() {
   g.pushMatrix();
   g.scale(0.2);
-  sceneShader.set("baseColor", 1.0, 0.5, 0.5, 0.1);
+  sceneShader.set("baseColor", 1.0, 0.5, 0.5, 0.4);
   turtle1.fruitDraw(g);
   g.popMatrix();
-
-
-  render(g);
 }
 public void renderEarth() {
   // Earth
-//  earthShader.set("baseColor", 0.0, 1.0, 0.0 );
+  //  earthShader.set("baseColor", 0.0, 1.0, 0.0 );
   earthShader.set("alpha", earthAlpha );
+  earthShader.set("t", (float(millis())/1000.0)/365.0*2);
   int r = 200;
   g.translate(0, r);
   g.sphere(r);
@@ -256,12 +266,12 @@ public void renderEarth() {
   //g.box(300, 15, 300);
 }
 public void renderBackground() {
-  int r = 2000;
+  int r = 1000;
   sphere(r);
 }
 
 public void renderLightSource() {
-  sceneShader.set("baseColor", 0.95, 0.97, 1.0, 1.0 );
+  sceneShader.set("baseColor", 0.7, 0.9, 1.0, 1.0 );
   pushMatrix();
   fill(255);
   translate(light.x*1.05, light.y*1.05, light.z*1.05);
@@ -270,19 +280,23 @@ public void renderLightSource() {
 }
 
 void draw() {
+  background(255, 0, 0);
 
   // Calculate the light position
-  final float t = TWO_PI * (millis() / 1000.0) / 10.0;
+  final float t = TWO_PI * (millis() / 1000.0) / 5.0;
   light.set(sin(t) * lDistance, -lDistance, cos(t) * lDistance);
 
   // Render
   shader(sceneShader);
   renderShadowMap();  // shadow pass
+  shader(starsShader);
+  renderBackground(); // add indication of light position
+  shader(sceneShader);
   renderScene();      // final scene
   shader(earthShader);
   renderEarth();
-  shader(starsShader);
-  renderBackground(); // add indication of light position
+  shader(sceneShader);
+  renderFruits();
   shader(sceneShader);
   renderLightSource(); // add indication of light position
 }

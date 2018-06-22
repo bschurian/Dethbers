@@ -1,11 +1,12 @@
 uniform float alpha;
 uniform sampler2D shadowMap;
+uniform float t;
 
 //in vec4 color_;
 in vec4 shadowMapCoordinates;
 in float lambert;
 in vec2 UV;
-
+in vec4 vertex_;
 
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex 
@@ -113,11 +114,20 @@ float snoise(vec3 v)
 
 void main(void) {
 
-    float height_ = snoise(vec3(UV.x*10,UV.y*10,0));
+    // float height_ = snoise(vertex_.xyz);
+    float height_ = snoise(vec3(UV.x*30,UV.y*30,t));
 
-    if(height_ < 0.2){
+    if(height_ < (1.0/90)){
+        gl_FragColor = vec4(0.45,0.92,0.92,0.1*alpha);
+        //gl_FragColor = vec4(0,0,0,0.1);
+    }else{
         //gl_FragColor = vec4(baseColor.rgb * lambert, alpha);
-        gl_FragColor = vec4(height_,0,0,alpha);
+        float heightOverSea = height_*(1.0/0.8)-0.2;
+        vec3 ground = vec3(0.9,0.7,0.3);
+        vec3 grass = vec3(0.5,1.0,0)*0.7;
+        vec3 snow = vec3(1,1,1);
+        vec3 terrainColor = mix(ground,grass,heightOverSea);
+        gl_FragColor = vec4(terrainColor*lambert,alpha);
 
         // Only render shadow if fragment is facing the light
         if (lambert > 0.0) {
@@ -126,9 +136,5 @@ void main(void) {
             gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
             }
         }
-    }else{
-        gl_FragColor = vec4(0.45,0.92,0.92,0.4*alpha);
-        //gl_FragColor = vec4(0,0,0,0.1);
-    }
-    
+    }    
 }

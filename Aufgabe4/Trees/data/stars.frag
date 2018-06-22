@@ -1,6 +1,7 @@
 //in vec4 color_;
 in vec2 UV;
 
+
 //
 // Description : Array and textureless GLSL 2D/3D/4D simplex 
 //               noise functions.
@@ -106,6 +107,6 @@ float snoise(vec3 v)
 }
 
 void main(void) {
-    float noise = snoise(vec3(UV.x,UV.y,0));
-    gl_FragColor = vec4(noise,noise,noise,1);
+    vec3 stars = vec3(pow(snoise(vec3(UV.x*400,UV.y*400,0)),10));
+    gl_FragColor = vec4(stars,1);
 }
