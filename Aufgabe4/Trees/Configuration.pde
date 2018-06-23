@@ -35,7 +35,28 @@ class Configuration {
     this.q = random(0.40f, 0.60f);
     this.e = random(0.0f, 0.50f);
     this.min = random(0.0f, 0.30f);
-    this.n = int(random(8, 15)); // Some of these can get large (!) - you may run out of heap space
+    this.n = int(random(6, 9)); // Some of these can get large (!) - you may run out of heap space
+  }
+  
+  public String toString(){
+    ArrayList<String> fields = new ArrayList<String>();
+    fields.add("r1="+this.r1);
+    fields.add("r2="+this.r2);
+    fields.add("a1="+this.a1);
+    fields.add("a2="+this.a2);
+    fields.add("fi1="+this.fi1);
+    fields.add("fi2="+this.fi2);
+    fields.add("om0="+this.om0);
+    fields.add("q="+this.q);
+    fields.add("e="+this.e);
+    fields.add("min="+this.min);
+    fields.add("n="+this.n);
+    //String fieldsS = fields.stream().reduce("",String::concat);
+    String fieldsS = fields.get(0);
+    for(int i = 1; i < fields.size(); ++i){
+      fieldsS += ", "+fields.get(i);    
+    }
+    return "Configuration: "+  fieldsS;  
   }
 }
 

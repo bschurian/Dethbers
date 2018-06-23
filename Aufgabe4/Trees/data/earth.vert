@@ -9,10 +9,9 @@ uniform vec3 lightNormal;
 
 //supplied by me
 uniform float alpha;
-uniform vec3 baseColor;
-
 // Calculated by update() method in the sketch
 uniform mat4 shadowTransform;
+uniform float t;
 
 // Supplied by Processing
 in vec4 vertex; // position in model coordinates
@@ -26,7 +25,7 @@ in vec2 texCoord; //uv
 out float lambert; // The "lambert term" - angle between light source and surface normal
 out vec4 shadowMapCoordinates; //
 out vec2 UV;
-out float height_;
+out vec4 vertex_;
 
 
 //
@@ -135,12 +134,14 @@ float snoise(vec3 v)
 
 void main(void) {
 
-    float height = snoise(vec3(texCoord.x*100,texCoord.y*100,0));
-    height_ = height;
-
-    gl_Position = transform * vertex + vec4(normal * height*10,0);
+    //float height = snoise(vec3(texCoord.x*30,texCoord.y*30,t));
 
     vec3 n = normalize(normalMatrix * normal);// Get normal direction in model view space
+
+    // gl_Position = transform * vertex + vec4(n * height*10,0);
+    gl_Position = transform * vertex;
+
+    vertex_ = transform * vertex;
 
     vec4 v = modelview * vertex;// Get vertex position in model view space
     v += vec4(n, 0.0);  // Apply normal bias removes "shadow acne"
