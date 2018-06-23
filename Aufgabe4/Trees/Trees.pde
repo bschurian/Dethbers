@@ -148,8 +148,8 @@ void keyReleased() {
 
 void setup() {
 
-  //fullScreen(P3D);
-  size(800, 600, P3D);
+  fullScreen(P3D);
+  //size(800, 600, P3D);
   blendMode(BLEND);
 
   // Setup camera
