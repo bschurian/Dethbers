@@ -37,6 +37,7 @@ final PMatrix3D shadowCoordsToUvSpace = new PMatrix3D(
 PeasyCam cam;   // Useful camera library
 Turtle turtle1;  // Draws the graphics
 Turtle turtle2;  // Draws the graphics
+PShape whale;
 
 // Used for production system
 //ArrayList<Token> tokens[];
@@ -202,19 +203,20 @@ void setup() {
   //rootConfig = config_g;
   buildTree(rootConfig, "root", turtle2);
   isRoot = false;
+
+  whale = loadShape("whale.obj");
 }
 
 boolean isRoot = true;
 
-public void render(PGraphics canvas) {
-
+public void renderTree(PGraphics canvas){
   // Tree
   canvas.pushMatrix();
   canvas.scale(0.2);
   //sceneShader.set(
   treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
   //sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
-  //sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
+  sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
   turtle1.draw(canvas);
   // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
   // turtle1.fruitDraw(g);
@@ -222,6 +224,20 @@ public void render(PGraphics canvas) {
   sceneShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
+}
+
+public void renderWhales(PGraphics canvas) {
+  canvas.pushMatrix();
+  canvas.scale(0.2);
+  canvas.translate(light.x*0.5, light.y*.5, light.z*.5);
+  canvas.shape(whale);
+  canvas.popMatrix();
+}
+
+
+public void render(PGraphics canvas) {
+  renderTree(canvas);
+  renderWhales(canvas);
 }
 
 public void renderShadowMap() {
@@ -251,7 +267,14 @@ public void renderShadowMap() {
 
 public void renderScene() {
   directionalLight(255, 255, 255, light.x, light.y, light.z);
-  render(g);
+    // Render
+  shader(treeShader);
+  renderTree(g);
+  renderWhales(g);
+  shader(earthShader);
+  renderEarth();
+  shader(sceneShader);
+  renderFruits();
 }
 public void renderFruits() {
   g.pushMatrix();
@@ -292,18 +315,11 @@ void draw() {
   final float t = TWO_PI * (millis() / 1000.0) / 5.0;
   light.set(sin(t) * lDistance, -lDistance, cos(t) * lDistance);
 
-  // Render
   shader(sceneShader);
-  shader(treeShader);
   renderShadowMap();  // shadow pass
   shader(starsShader);
   renderBackground(); // add indication of light position
-  shader(sceneShader);
   renderScene();      // final scene
-  shader(earthShader);
-  renderEarth();
-  shader(sceneShader);
-  renderFruits();
   shader(sceneShader);
   renderLightSource(); // add indication of light position
 }
