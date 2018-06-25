@@ -1,6 +1,6 @@
 import peasy.*;
 import java.util.Map;
-import java.util.stream.Stream;
+//import java.util.stream.Stream;
 
 PVector light = new PVector();  // Light direction for shading
 int lDistance;
@@ -61,6 +61,7 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
   int current = 0;
   int next = 1;
 
+  boolean aNext = true;
   // Axiom
   tokens[current].add(new A(100, config.om0));
 
@@ -80,7 +81,10 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
           }
         } else {
           float r = random(5, 10); 
-          tokens[next].add(new Apple(r));
+          if (aNext) {
+            tokens[next].add(new Apple(r));
+          }
+          aNext = !aNext;
         }
       }
     }
@@ -109,10 +113,15 @@ void buildTree(final Configuration config, final String treeName, final Turtle t
       if (!(t instanceof A)) {
         tokens[next].add(t);
       } else {
-        if (random(0, 2) >=1) {
+        //if (random(0, 2) >=1) {
+        //float r = random(5, 10); 
+        //  tokens[next].add(new Apple(r));
+        //}
+        if (aNext) {
           float r = random(5, 10); 
           tokens[next].add(new Apple(r));
         }
+        aNext = !aNext;
       }
     }
 
@@ -134,9 +143,11 @@ void keyReleased() {
     earthAlpha = min(earthAlpha+0.1, 1.0);
     break;
   default:
-    //niceTree
-    //config = new Configuration(201602);
-    config = new Configuration(millis());
+    //antlers
+    config = new Configuration(201602);
+    //bouquet
+    //config = new Configuration(29353);
+    //config = new Configuration(millis());
     buildTree(config, "main", turtle1);
     isRoot = true;
     Configuration rootConfig;
@@ -233,7 +244,7 @@ public void renderTree(PGraphics canvas) {
 }
 private PVector position(float t, float r) { 
   return new PVector( 
-    r * cos(t),
+    r * cos(t), 
     //magic numbers
     sin(t)*50+sin(t*5)*3, 
     r * sin(t) 
@@ -295,15 +306,12 @@ public void render(PGraphics canvas) {
 }
 public void renderShadowMap() {
   // Render the shadow map
-  blendMode(DARKEST);
   shadowMap.beginDraw();
   shadowMap.background(0xffffffff); // Will set the depth to 1.0 (maximum depth)
   shadowMap.camera(light.x, light.y, light.z, 0, 0, 0, 0, 1, 0);
   render(shadowMap);
   shadowMap.endDraw();
-  shadowMap.camera(-50, 100, -100, 0, 0, 0, 0, 1, 0);
-  render(shadowMap);
-  blendMode(BLEND);
+  //image(new PImage(shadowMap.getImage()), -width/2, -height/2);
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
   treeShader.set("shadowMap", shadowMap);  // Send to shader
@@ -370,7 +378,7 @@ void draw() {
   final float t = TWO_PI * (millis() / 1000.0) / 20.0;
   light.set(sin(t) * lDistance, -lDistance, cos(t) * lDistance);
 
-  shader(sceneShader);
+  shader(shadowShader);
   renderShadowMap();  // shadow pass
   shader(starsShader);
   renderBackground(); // add indication of light position
