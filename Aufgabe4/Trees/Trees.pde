@@ -221,12 +221,13 @@ public void renderTree(PGraphics canvas) {
   canvas.scale(0.2);
 
   //treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
-  sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
+  sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
+  //sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
   turtle1.draw(canvas);
   // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
   // turtle1.fruitDraw(g);
   //sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
-  sceneShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
+  sceneShader.set("baseColor", 1.0, 0.5, 0.5, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
 }
