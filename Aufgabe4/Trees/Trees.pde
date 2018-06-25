@@ -295,11 +295,15 @@ public void render(PGraphics canvas) {
 }
 public void renderShadowMap() {
   // Render the shadow map
+  blendMode(DARKEST);
   shadowMap.beginDraw();
-  shadowMap.camera(light.x, light.y, light.z, 0, 0, 0, 0, 1, 0);
   shadowMap.background(0xffffffff); // Will set the depth to 1.0 (maximum depth)
+  shadowMap.camera(light.x, light.y, light.z, 0, 0, 0, 0, 1, 0);
   render(shadowMap);
   shadowMap.endDraw();
+  shadowMap.camera(-50, 100, -100, 0, 0, 0, 0, 1, 0);
+  render(shadowMap);
+  blendMode(BLEND);
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
   treeShader.set("shadowMap", shadowMap);  // Send to shader
@@ -322,7 +326,9 @@ public void renderScene() {
   renderTree(g);
   shader(treeShader);
   treeShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
+  //blendMode(ADD);
   renderWhales(g);
+  //blendMode(BLEND);
   shader(earthShader);
   renderEarth();
   shader(sceneShader);
