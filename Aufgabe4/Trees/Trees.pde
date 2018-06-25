@@ -38,6 +38,7 @@ PeasyCam cam;   // Useful camera library
 Turtle turtle1;  // Draws the graphics
 Turtle turtle2;  // Draws the graphics
 PShape whale;
+int whalesN = 5;
 
 // Used for production system
 //ArrayList<Token> tokens[];
@@ -150,8 +151,8 @@ void keyReleased() {
 
 void setup() {
 
-  fullScreen(P3D);
-  //size(800, 600, P3D);
+  //fullScreen(P3D);
+  size(800, 600, P3D);
   blendMode(BLEND);
 
   // Setup camera
@@ -205,11 +206,16 @@ void setup() {
   isRoot = false;
 
   whale = loadShape("whale.obj");
+  //magic number based on the model
+  whale.scale(0.7);
+  whale.rotateZ(-HALF_PI);
+  whale.rotateY(0.3);
+  whale.translate(0, 0, 20);
 }
 
 boolean isRoot = true;
 
-public void renderTree(PGraphics canvas){
+public void renderTree(PGraphics canvas) {
   // Tree
   canvas.pushMatrix();
   canvas.scale(0.2);
@@ -225,23 +231,69 @@ public void renderTree(PGraphics canvas){
   turtle2.draw(canvas);
   canvas.popMatrix();
 }
+private PVector position(float t, float r) { 
+  return new PVector( 
+    r * cos(t),
+    //magic numbers
+    sin(t)*50+sin(t*5)*3, 
+    r * sin(t) 
+    );
+} 
+private PVector derivate1(float t, float r) { 
+  return new PVector( 
+    - r * sin(t), 
+    //0,
+    //magic numbers
+    cos(t)*50, 
+    r * cos(t) 
+    );
+} 
+private PVector derivate2(float t, float r) { 
+  return new PVector( 
+    - r * cos(t), 
+    0, 
+    - r * sin(t) 
+    );
+} 
+private PMatrix3D frenet(float t, float r) { 
+  // Translate 
+  PMatrix3D matrix = new PMatrix3D(); 
+  final PVector pos = position(t, r); 
+  matrix.translate(pos.x, pos.y, pos.z); 
+  // Rotate 
+  final PVector e0 = derivate1(t, r).normalize(); 
+  final PVector e2 = e0.cross(derivate2(t, r)).normalize(); 
+  final PVector e1 = e2.cross(e0);
+  matrix.apply( 
+    e2.x, e1.x, e0.x, 0, 
+    e2.y, e1.y, e0.y, 0, 
+    e2.z, e1.z, e0.z, 0, 
+    0, 0, 0, 1 
+    ); 
 
+  //// Scale 
+  //final float f = 1.0 + sin(8.0 * t) / 5.0;  // TODO: This is different for a shell 
+  //matrix.scale(f, f, f); 
+
+  return matrix;
+} 
 public void renderWhales(PGraphics canvas) {
-  canvas.pushMatrix();
-  canvas.scale(0.2);
-  canvas.translate(light.x*0.5, light.y*.5, light.z*.5);
-  canvas.shape(whale);
-  canvas.popMatrix();
+  float t = ((float) millis())/1000/30*4;
+  float r = 100.0;
+  for (int i = 0; i< whalesN; i++) {
+    canvas.pushMatrix();
+    //magic numbers
+    canvas.translate(0, -75, 0);
+    canvas.applyMatrix(frenet(t+2*PI*(1.0/5)*i, r+sin(t)));
+    canvas.shape(whale);
+    canvas.popMatrix();
+  }
 }
-
-
 public void render(PGraphics canvas) {
   renderTree(canvas);
   renderWhales(canvas);
 }
-
 public void renderShadowMap() {
-
   // Render the shadow map
   shadowMap.beginDraw();
   shadowMap.camera(light.x, light.y, light.z, 0, 0, 0, 0, 1, 0);
@@ -251,7 +303,6 @@ public void renderShadowMap() {
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
   treeShader.set("shadowMap", shadowMap);  // Send to shader
-
   // Generate shadow coordinate transformation matrix
   final PMatrix3D PMV = ((PGraphicsOpenGL)shadowMap).projmodelview;
   final PMatrix3D MV_inverse = ((PGraphicsOpenGL)g).modelviewInv;    
@@ -264,12 +315,13 @@ public void renderShadowMap() {
   treeShader.set("shadowTransform", shadowTransform); // Send to shader
   earthShader.set("shadowTransform", shadowTransform); // Send to shader
 }
-
 public void renderScene() {
   directionalLight(255, 255, 255, light.x, light.y, light.z);
-    // Render
+  // Render
   shader(treeShader);
   renderTree(g);
+  shader(treeShader);
+  treeShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
   renderWhales(g);
   shader(earthShader);
   renderEarth();
@@ -292,13 +344,11 @@ public void renderEarth() {
   g.translate(0, r);
   g.sphere(r);
   g.translate(0, -r);
-  //g.box(300, 15, 300);
 }
 public void renderBackground() {
   int r = 1000;
   sphere(r);
 }
-
 public void renderLightSource() {
   sceneShader.set("baseColor", 0.7, 0.9, 1.0, 1.0 );
   pushMatrix();
@@ -307,12 +357,11 @@ public void renderLightSource() {
   sphere(5);
   popMatrix();
 }
-
 void draw() {
   background(255, 0, 0);
 
   // Calculate the light position
-  final float t = TWO_PI * (millis() / 1000.0) / 5.0;
+  final float t = TWO_PI * (millis() / 1000.0) / 20.0;
   light.set(sin(t) * lDistance, -lDistance, cos(t) * lDistance);
 
   shader(sceneShader);
