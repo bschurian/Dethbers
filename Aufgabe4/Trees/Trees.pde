@@ -22,7 +22,7 @@ Configuration rootConfig = config_a;
 PShader sceneShader;   // For rendering the trees
 PShader earthShader;   // For rendering the earth
 PShader starsShader;
-PShader treeShader;
+//PShader treeShader;
 PShader shadowShader;  // For renderung the shadow map
 PGraphics shadowMap;   // Keeps the shadow information as a texture
 
@@ -177,8 +177,8 @@ void setup() {
   // Init scene render
   sceneShader = new PShader(this, "scene.vert", "scene.frag");
   shader(sceneShader);
-  treeShader = new PShader(this, "tree.vert", "tree.frag");
-  shader(treeShader);
+ // treeShader = new PShader(this, "tree.vert", "tree.frag");
+ // shader(treeShader);
   noStroke();
   perspective(60 * DEG_TO_RAD, (float)width / height, 10, 4000);
   // Init earth render
@@ -219,9 +219,8 @@ public void renderTree(PGraphics canvas) {
   // Tree
   canvas.pushMatrix();
   canvas.scale(0.2);
-  //sceneShader.set(
-  treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
-  //sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
+
+  //treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
   sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
   turtle1.draw(canvas);
   // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
@@ -302,7 +301,7 @@ public void renderShadowMap() {
   shadowMap.endDraw();
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
-  treeShader.set("shadowMap", shadowMap);  // Send to shader
+  //treeShader.set("shadowMap", shadowMap);  // Send to shader
   // Generate shadow coordinate transformation matrix
   final PMatrix3D PMV = ((PGraphicsOpenGL)shadowMap).projmodelview;
   final PMatrix3D MV_inverse = ((PGraphicsOpenGL)g).modelviewInv;    
@@ -312,16 +311,16 @@ public void renderShadowMap() {
   shadowTransform.apply(MV_inverse); // Processing needs us to apply the inverted model-view matrix of the final scene pass [1] 
   shadowTransform.transpose(); // [2]
   sceneShader.set("shadowTransform", shadowTransform); // Send to shader
-  treeShader.set("shadowTransform", shadowTransform); // Send to shader
+  //treeShader.set("shadowTransform", shadowTransform); // Send to shader
   earthShader.set("shadowTransform", shadowTransform); // Send to shader
 }
 public void renderScene() {
   directionalLight(255, 255, 255, light.x, light.y, light.z);
   // Render
-  shader(treeShader);
+  shader(sceneShader);
   renderTree(g);
-  shader(treeShader);
-  treeShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
+  shader(sceneShader);
+  sceneShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
   renderWhales(g);
   shader(earthShader);
   renderEarth();
