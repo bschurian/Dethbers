@@ -3,6 +3,7 @@ import java.util.Map;
 //import java.util.stream.Stream;
 
 PVector light = new PVector();  // Light direction for shading
+PVector light2 = new PVector();  // Light direction for shading
 int lDistance;
 
 final Configuration config_a = new Configuration(0.75f, 0.77f, 0.5759586532f, -0.5759586532f, 0.0f, 0.0f, 30.0f, 0.50f, 0.40f, 0.0f, 10);
@@ -25,6 +26,7 @@ PShader starsShader;
 PShader treeShader;
 PShader shadowShader;  // For renderung the shadow map
 PGraphics shadowMap;   // Keeps the shadow information as a texture
+PGraphics shadowMap2;   // Keeps the shadow information as a texture
 
 // This matrix transoforms homogeneous shadowCoords into the UV texture space [-1, 1] -> [0, 1]
 final PMatrix3D shadowCoordsToUvSpace = new PMatrix3D(
@@ -144,10 +146,10 @@ void keyReleased() {
     break;
   default:
     //antlers
-    config = new Configuration(201602);
+    //config = new Configuration(201602);
     //bouquet
     //config = new Configuration(29353);
-    //config = new Configuration(millis());
+    config = new Configuration(millis());
     buildTree(config, "main", turtle1);
     isRoot = true;
     Configuration rootConfig;
@@ -183,6 +185,12 @@ void setup() {
   shadowMap.shader(shadowShader);
   shadowMap.ortho(-200, 200, -200, 200, 10, 400); // Setup orthogonal view matrix for the directional light
   shadowMap.endDraw();
+  shadowMap2 = createGraphics(width * 4, height * 4, P3D);
+  shadowMap2.beginDraw();
+  shadowMap2.noStroke();
+  shadowMap2.shader(shadowShader);
+  shadowMap2.ortho(-200, 200, -200, 200, 10, 400); // Setup orthogonal view matrix for the directional light
+  shadowMap2.endDraw();
 
 
   // Init scene render
@@ -237,7 +245,6 @@ public void renderTree(PGraphics canvas) {
   turtle1.draw(canvas);
   // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
   // turtle1.fruitDraw(g);
-  //sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
   sceneShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
   turtle2.draw(canvas);
   canvas.popMatrix();
@@ -304,14 +311,13 @@ public void render(PGraphics canvas) {
   renderTree(canvas);
   renderWhales(canvas);
 }
-public void renderShadowMap() {
+public void renderShadowMaps() {
   // Render the shadow map
   shadowMap.beginDraw();
   shadowMap.background(0xffffffff); // Will set the depth to 1.0 (maximum depth)
   shadowMap.camera(light.x, light.y, light.z, 0, 0, 0, 0, 1, 0);
   render(shadowMap);
   shadowMap.endDraw();
-  //image(new PImage(shadowMap.getImage()), -width/2, -height/2);
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
   treeShader.set("shadowMap", shadowMap);  // Send to shader
@@ -326,9 +332,30 @@ public void renderShadowMap() {
   sceneShader.set("shadowTransform", shadowTransform); // Send to shader
   treeShader.set("shadowTransform", shadowTransform); // Send to shader
   earthShader.set("shadowTransform", shadowTransform); // Send to shader
+
+  shadowMap2.beginDraw();
+  shadowMap2.background(0xffffffff); // Will set the depth to 1.0 (maximum depth)
+  shadowMap2.camera(light2.x, light2.y, light2.z, 0, 0, 0, 0, 1, 0);
+  render(shadowMap2);
+  shadowMap2.endDraw();
+  sceneShader.set("shadowMap2", shadowMap2);  // Send to shader
+  earthShader.set("shadowMap2", shadowMap2);  // Send to shader
+  treeShader.set("shadowMap2", shadowMap2);  // Send to shader
+  // Generate shadow coordinate transformation matrix
+  final PMatrix3D PMV2 = ((PGraphicsOpenGL)shadowMap2).projmodelview;
+  final PMatrix3D MV_inverse2 = ((PGraphicsOpenGL)g).modelviewInv;    
+  PMatrix3D shadowTransform2 = new PMatrix3D();
+  shadowTransform2.apply(shadowCoordsToUvSpace);  // Convert coords into UV
+  shadowTransform2.apply(PMV2); // Apply project-model-view matrix from the shadow pass (light direction)
+  shadowTransform2.apply(MV_inverse2); // Processing needs us to apply the inverted model-view matrix of the final scene pass [1] 
+  shadowTransform2.transpose(); // [2]
+  sceneShader.set("shadowTransform2", shadowTransform2); // Send to shader
+  treeShader.set("shadowTransform2", shadowTransform2); // Send to shader
+  earthShader.set("shadowTransform2", shadowTransform2); // Send to shader
 }
 public void renderScene() {
   directionalLight(255, 255, 255, light.x, light.y, light.z);
+  directionalLight(255, 255, 255, light2.x, light2.y, light2.z);
   // Render
   shader(treeShader);
   renderTree(g);
@@ -363,11 +390,16 @@ public void renderBackground() {
   int r = 1000;
   sphere(r);
 }
-public void renderLightSource() {
+public void renderLightSources() {
   sceneShader.set("baseColor", 0.7, 0.9, 1.0, 1.0 );
   pushMatrix();
   fill(255);
   translate(light.x*1.05, light.y*1.05, light.z*1.05);
+  sphere(5);
+  popMatrix();
+  pushMatrix();
+  fill(255);
+  translate(light2.x*1.05, light2.y*1.05, light2.z*1.05);
   sphere(5);
   popMatrix();
 }
@@ -377,14 +409,15 @@ void draw() {
   // Calculate the light position
   final float t = TWO_PI * (millis() / 1000.0) / 20.0;
   light.set(sin(t) * lDistance, -lDistance, cos(t) * lDistance);
+  light2.set(sin(t*1.5+HALF_PI) * lDistance, -lDistance*0.95, sin(t*1.5) * lDistance);
 
   shader(shadowShader);
-  renderShadowMap();  // shadow pass
+  renderShadowMaps();  // shadow pass
   shader(starsShader);
-  renderBackground(); // add indication of light position
+  renderBackground(); 
   renderScene();      // final scene
   shader(sceneShader);
-  renderLightSource(); // add indication of light position
+  renderLightSources(); // add indication of light position
 }
 
 /*

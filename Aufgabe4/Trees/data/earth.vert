@@ -5,12 +5,14 @@ uniform mat4 modelview;
 uniform mat3 normalMatrix;
 
 
-uniform vec3 lightNormal;
+uniform vec3 lightNormal[8];
+//uniform vec3 lightNormal;
 
 //supplied by me
 uniform float alpha;
 // Calculated by update() method in the sketch
 uniform mat4 shadowTransform;
+uniform mat4 shadowTransform2;
 uniform float t;
 
 // Supplied by Processing
@@ -24,6 +26,7 @@ in vec2 texCoord; //uv
 //out vec4 color_;  // vertex color
 out float lambert; // The "lambert term" - angle between light source and surface normal
 out vec4 shadowMapCoordinates; //
+out vec4 shadowMapCoordinates2; //
 out vec2 UV;
 out vec4 vertex_;
 
@@ -148,8 +151,10 @@ void main(void) {
 
     //color_ = color;
     shadowMapCoordinates = shadowTransform * v;
+    shadowMapCoordinates2 = shadowTransform2 * v;
     //lambert = dot(-lightDirection, n);
-    lambert = dot(n, lightNormal);
+    lambert = dot(n, lightNormal[0])*0.5+dot(n, lightNormal[1])*0.5;
+    //lambert = dot(n, lightNormal);
 
     UV = texCoord;
 }
