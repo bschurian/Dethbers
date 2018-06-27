@@ -22,6 +22,8 @@ out float lambert; // The "lambert term" - angle between light source and surfac
 out vec4 shadowMapCoordinates; //
 out vec4 shadowMapCoordinates2; //
 
+out vec2 UV;
+in vec2 texCoord;
 
 void main() {
 
@@ -37,4 +39,6 @@ void main() {
     shadowMapCoordinates2 = shadowTransform2 * v;
     //lambert = dot(-lightDirection, n);
     lambert = dot(n, lightNormal[0])*0.5+dot(n, lightNormal[1])*0.5;
+
+        UV = texCoord;
 }
