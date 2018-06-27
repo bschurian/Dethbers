@@ -49,7 +49,7 @@ class Turtle {
     for (int i = 0; i < sides; ++i) {
       float x = cos(i * angle) * r;
       float y = sin(i * angle) * r;
-      bottom.vertex(x, y, 0);
+      bottom.vertex(x, y, 0, ((float)i)/sides, 0);
     }
     bottom.endShape(CLOSE);
     segment.addChild(bottom);
@@ -61,7 +61,7 @@ class Turtle {
     for (int i = 0; i < sides; ++i) {
       float x = cos(i * angle) * r;
       float y = sin(i * angle) * r;
-      top.vertex(x, y, length);
+      top.vertex(x, y, length, ((float)i)/sides, 1);
     }
     top.endShape(CLOSE);
     segment.addChild(top);
@@ -73,8 +73,8 @@ class Turtle {
     for (int i = 0; i < sides + 1; ++i) {
       float x = cos(i * angle) * r;
       float y = sin(i * angle) * r;
-      hull.vertex(x, y, length);
-      hull.vertex(x, y, 0);
+      hull.vertex(x, y, length, ((float)i)/sides, 1);
+      hull.vertex(x, y, 0, ((float)i)/sides, 0);
     }
     hull.endShape(CLOSE);
     segment.addChild(hull);

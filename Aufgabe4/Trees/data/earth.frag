@@ -1,9 +1,11 @@
 uniform float alpha;
 uniform sampler2D shadowMap;
+uniform sampler2D shadowMap2;
 uniform float t;
 
 //in vec4 color_;
 in vec4 shadowMapCoordinates;
+in vec4 shadowMapCoordinates2;
 in float lambert;
 in vec2 UV;
 in vec4 vertex_;
@@ -131,10 +133,14 @@ void main(void) {
 
         // Only render shadow if fragment is facing the light
         if (lambert > 0.0) {
-            float depth = texture(shadowMap, shadowMapCoordinates.xy).r;
-            if (shadowMapCoordinates.z > depth) {
+          float depth = texture(shadowMap, shadowMapCoordinates.xy).r;
+          float depth2 = texture(shadowMap2, shadowMapCoordinates2.xy).r;
+          if (shadowMapCoordinates.z > depth) {
             gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
-            }
+          }
+          if (shadowMapCoordinates.z > depth2) {
+            gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
+          }
         }
     }    
 }

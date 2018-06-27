@@ -1,11 +1,44 @@
 uniform vec4 baseColor;
 uniform sampler2D shadowMap;
+uniform sampler2D shadowMap2;
 
 //in vec4 color_;
 in vec4 shadowMapCoordinates;
+in vec4 shadowMapCoordinates2;
 in float lambert;
 
+//in vec4 color_;
+in vec2 UV;
 
+
+//
+// Description : Array and textureless GLSL 2D/3D/4D simplex
+//               noise functions.
+//      Author : Ian McEwan, Ashima Arts.
+//  Maintainer : stegu
+//     Lastmod : 20110822 (ijm)
+//     License : Copyright (C) 2011 Ashima Arts. All rights reserved.
+//               Distributed under the MIT License. See LICENSE file.
+//               https://github.com/ashima/webgl-noise
+//               https://github.com/stegu/webgl-noise
+//
+
+vec3 mod289(vec3 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 mod289(vec4 x) {
+  return x - floor(x * (1.0 / 289.0)) * 289.0;
+}
+
+vec4 permute(vec4 x) {
+     return mod289(((x*34.0)+1.0)*x);
+}
+
+vec4 taylorInvSqrt(vec4 r)
+{
+  return 1.79284291400159 - 0.85373472095314 * r;
+}
 
 float snoise(vec3 v)
   {
@@ -81,14 +114,20 @@ float snoise(vec3 v)
   return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
                                 dot(p2,x2), dot(p3,x3) ) );
 }
-void main(void) {
 
-  //  gl_FragColor = vec4(baseColor.rgb * lambert, baseColor.w);
-    gl_FragColor = vec3(pow(snoise(vec3(UV.x*400,UV.y*400,0)),10));
+void main(void) {
+  float intens  = pow(snoise(vec3(UV.x*18,UV.y*3,0)),0.5);
+    gl_FragColor = vec4(baseColor.rgb * lambert * intens, baseColor.w);
+    //gl_FragColor = vec4(intens, intens, intens, 1);
+    //gl_FragColor = vec4(UV.x,UV.y,0,1);
     // Only render shadow if fragment is facing the light
     if (lambert > 0.0) {
         float depth = texture(shadowMap, shadowMapCoordinates.xy).r;
+        float depth2 = texture(shadowMap2, shadowMapCoordinates2.xy).r;
         if (shadowMapCoordinates.z > depth) {
+          gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
+        }
+        if (shadowMapCoordinates.z > depth2) {
           gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
         }
     }
