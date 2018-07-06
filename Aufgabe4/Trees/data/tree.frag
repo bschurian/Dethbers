@@ -116,7 +116,7 @@ float snoise(vec3 v)
 }
 
 void main(void) {
-  float intens  = pow(snoise(vec3(UV.x*18,UV.y*3,0)),0.5);
+  float intens  = pow(snoise(vec3(UV.x*30,UV.y*4,0)),0.3);
     gl_FragColor = vec4(baseColor.rgb * lambert * intens, baseColor.w);
     //gl_FragColor = vec4(intens, intens, intens, 1);
     //gl_FragColor = vec4(UV.x,UV.y,0,1);
