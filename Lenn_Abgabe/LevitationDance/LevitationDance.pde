@@ -21,7 +21,7 @@ Walker[] walkers = new Walker[walkerAmount];
 void setup() {
   //size(600, 400);
   fullScreen();
-
+  background(0);
   minim = new Minim(this);
 
   song = minim.loadFile("levitation.mp3", 2048);
@@ -31,8 +31,9 @@ void setup() {
   fft = new FFT(song.bufferSize(), song.sampleRate());
 
   beat = new BeatDetect();
-  ellipseMode(CENTER);
-
+  ellipseMode(RADIUS);
+  
+  
   for (int i = 0; i<walkers.length; i++) {
     walkers[i] = new Walker(width/2, height/2);
   }
@@ -42,22 +43,34 @@ void draw() {
   fill(0, overlayAlpha);
   noStroke();
   rect(0, 0, width, height);
-
-  fft.forward(song.mix);
   
+  // FFT for beat recognition
+  fft.forward(song.mix);
+
+  // Beat recognition
   if ( isBeat() ) {
-    for (int i = 0; i<walkerAmount; i++) walkers[i].beatWalk();
+    for (int i = 0; i<walkerAmount; i++) {
+      walkers[i].beatWalk();
+    }
   } else {
-    for (int i = 0; i<walkerAmount; i++) walkers[i].walk();
+    for (int i = 0; i<walkerAmount; i++) {
+      walkers[i].walk();
+    }
+  }
+  
+  // Show walker
+  for (int i = 0; i<walkerAmount; i++) {
+    walkers[i].show(beatFloat);
   }
 
-  for (int i = 0; i<walkerAmount; i++) walkers[i].show(beatFloat);
-
-  for (int i = 0; i<walkerAmount; i++) walkers[i].connectWalker(walkers);
+  // Connect Walker
+  for (int i = 0; i<walkerAmount; i++) {
+    walkers[i].connectWalker(walkers);
+  }
 }
 
 
-// -----  Controls ------- //
+// -----  Controls - Mute song ------- //
 void keyPressed() {
   if ( key == ' ' & isMute) {
     song.unmute();
