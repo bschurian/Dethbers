@@ -1,4 +1,4 @@
-/*
+/* //<>// //<>//
 Lennart Egbers - poo()
  Generative Gestaltung 
  Beuth Hochschule für Technik Berlin
@@ -7,33 +7,32 @@ Lennart Egbers - poo()
 import ddf.minim.*;
 import ddf.minim.analysis.*;
 import ddf.minim.ugens.*;
+import ddf.minim.effects.*;
 
 Minim minim;
 AudioPlayer song;
-BeatDetect beat;
+
+int walkerAmount = 20;
+float overlayAlpha = 50, amp, beatFloat;
+Boolean isMute = true;
+Walker[] walkers = new Walker[walkerAmount];
+Detector detector;
 FFT fft;
 
-int walkerAmount = 40;
-float overlayAlpha = 50, amp, beatFloat;
-Boolean punch = false, isMute = true;
-Walker[] walkers = new Walker[walkerAmount];
-
 void setup() {
-  //size(600, 400);
-  fullScreen();
+  size(600, 400);
+  //size(1920, 1080);
+  //fullScreen();
   background(0);
   minim = new Minim(this);
 
   song = minim.loadFile("levitation.mp3", 2048);
   song.play();
+  detector = new Detector(song);
   song.mute();
 
-  fft = new FFT(song.bufferSize(), song.sampleRate());
-
-  beat = new BeatDetect();
   ellipseMode(RADIUS);
-  
-  
+
   for (int i = 0; i<walkers.length; i++) {
     walkers[i] = new Walker(width/2, height/2);
   }
@@ -43,12 +42,11 @@ void draw() {
   fill(0, overlayAlpha);
   noStroke();
   rect(0, 0, width, height);
-  
-  // FFT for beat recognition
-  fft.forward(song.mix);
 
-  // Beat recognition
-  if ( isBeat() ) {
+  //detector.run();
+
+  // Animation at kick hit
+  if ( detector.hits() ) {
     for (int i = 0; i<walkerAmount; i++) {
       walkers[i].beatWalk();
     }
@@ -57,7 +55,8 @@ void draw() {
       walkers[i].walk();
     }
   }
-  
+
+  beatFloat = 10;
   // Show walker
   for (int i = 0; i<walkerAmount; i++) {
     walkers[i].show(beatFloat);
@@ -65,10 +64,19 @@ void draw() {
 
   // Connect Walker
   for (int i = 0; i<walkerAmount; i++) {
-    walkers[i].connectWalker(walkers);
+    walkers[i].connectWalker(walkers, walkerAmount);
   }
+
+
+  fill(250);
+  text(frameRate, 10, 10);
 }
 
+/* void stop() {
+ song.close();
+ minim.stop();
+ super.stop();
+ } */
 
 // -----  Controls - Mute song ------- //
 void keyPressed() {

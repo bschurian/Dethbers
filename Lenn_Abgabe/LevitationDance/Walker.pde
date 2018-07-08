@@ -1,6 +1,7 @@
 class Walker {
   // ---------- variables  ---------- //
   float x, y, targetX, targetY, ellipseSize = 5.0, alphaEllipse = 175;
+  int connectCount = 5, walkerCount = 0;
 
   // ---------- Constructor and getter-methods ---------- //
   Walker(float x_init, float y_init) {
@@ -18,10 +19,11 @@ class Walker {
   void beatWalk() {
     targetX = x+random(-width/2, width/2);
     targetY = y+random(-height/2, height/2);
+
     if (targetX < 0 || targetX > width || targetY < 0 || targetY > height ) {
       beatWalk();
     } else {
-      // move smoothly to target positXon
+      // move smoothly to target positon
       x = lerp(x, targetX, 0.1);
       y = lerp(y, targetY, 0.1);
     }
@@ -35,7 +37,7 @@ class Walker {
     if (targetX < 0 || targetX > width || targetY < 0 || targetY > height) {
       walk();
     } else {
-      // move smoothly to target positXon
+      // move smoothly to target position
       x = lerp(x, targetX, 0.1);
       y = lerp(y, targetY, 0.1);
     }
@@ -49,11 +51,16 @@ class Walker {
   }
 
   // ---------- Connect every walker with another walker ---------- //
-  void connectWalker(Walker[] walkers) {
-    //for (Walker walker : walkers) {
-    for (int i = 0; i<5; i++) {  
+  void connectWalker(Walker[] walkers, int amount) {
+    
+    for (int i = 0; i<connectCount; i++) {  
       stroke(255, 50);
-      line(x, y, walkers[i].getX(), walkers[i].getY());
+      line(x, y, walkers[walkerCount].getX(), walkers[walkerCount].getY());
+      if ( walkerCount < amount-1 ) {
+        walkerCount += 1;
+      } else { 
+        walkerCount = 0;
+      }
     }
   }
 }
