@@ -14,8 +14,8 @@ AudioPlayer songDetect;
 AudioPlayer songPlayer;
 AudioOutput out;
 
-int walkerAmount = 20, connectCount = 3;
-float overlayAlpha = 50, amp, beatFloat;
+int walkerAmount = 20, connectCount = 3, beatInt;
+float overlayAlpha = 50, amp;
 Boolean isMute = true;
 Walker[] walkers = new Walker[walkerAmount];
 Detector detector;
@@ -25,6 +25,8 @@ void setup() {
   //size(1920, 1080);
   //fullScreen();
   background(0);
+  frameRate(60);
+  
   minim = new Minim(this);
 
   songDetect = minim.loadFile("levitation.mp3", 2048); // this song for detection
@@ -57,10 +59,10 @@ void draw() {
     }
   }
 
-  beatFloat = 10;
+  beatInt = detector.getBeatLevel();
   // Show walker
   for (int i = 0; i<walkerAmount; i++) {
-    walkers[i].show(beatFloat);
+    walkers[i].show(beatInt);
   }
 
   // Connect Walker
@@ -69,8 +71,9 @@ void draw() {
   }
 
 
-  fill(250);
-  text(frameRate, 10, 20);
+  println(frameRate);
+  //fill(250);
+  //text(frameRate, 10, 20);
 }
 
 void stop() {

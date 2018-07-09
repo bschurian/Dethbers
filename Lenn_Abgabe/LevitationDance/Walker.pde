@@ -29,7 +29,7 @@ class Walker { //<>// //<>//
     if (targetX < 0 || targetX > width || targetY < 0 || targetY > height ) {
       beatWalk();
     } else {
-      // move smoothly to target positon
+      // move smoothly to target position
       x = lerp(x, targetX, 0.1);
       y = lerp(y, targetY, 0.1);
     }
@@ -37,8 +37,8 @@ class Walker { //<>// //<>//
 
   // ---------- WALK: Move little steps by no Beat ---------- //
   void walk() {    
-    targetX = x+random(-10, 10);
-    targetY = y+random(-10, 10);   
+    targetX = x+random(-2, 2);
+    targetY = y+random(-2, 2);   
 
     if (targetX < 0 || targetX > width || targetY < 0 || targetY > height) {
       walk();
@@ -58,6 +58,8 @@ class Walker { //<>// //<>//
 
 
   // -----  Connecting dots ------- //
+  // draw a line from the Walker to three other walkers
+  
   void connectWalker(Walker[] walkers) {
     stroke(175, 50);
     for (int i = 0; i< 3; i++) {
