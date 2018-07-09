@@ -24,14 +24,6 @@ class Detector {
     beat = new BeatDetect();
     lowPass = new LowPassFS(cutoffFreq, song_.sampleRate());
     song.addEffect(lowPass);
-    //song.disableEffect(lowPass);
-
-    //beat.detect(song.mix);
-    // TODO: LowPass on signal and detect the beat
-    //fft = new FFT(song.bufferSize(), song.sampleRate());
-  }
-
-  void run() {
   }
 
   Boolean hits() {

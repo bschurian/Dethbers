@@ -1,4 +1,4 @@
-/* //<>// //<>//
+/* //<>//
 Lennart Egbers - poo()
  Generative Gestaltung 
  Beuth Hochschule für Technik Berlin
@@ -10,14 +10,15 @@ import ddf.minim.ugens.*;
 import ddf.minim.effects.*;
 
 Minim minim;
-AudioPlayer song;
+AudioPlayer songDetect;
+AudioPlayer songPlayer;
+AudioOutput out;
 
-int walkerAmount = 20;
+int walkerAmount = 20, connectCount = 3;
 float overlayAlpha = 50, amp, beatFloat;
 Boolean isMute = true;
 Walker[] walkers = new Walker[walkerAmount];
 Detector detector;
-FFT fft;
 
 void setup() {
   size(600, 400);
@@ -26,10 +27,12 @@ void setup() {
   background(0);
   minim = new Minim(this);
 
-  song = minim.loadFile("levitation.mp3", 2048);
-  song.play();
-  detector = new Detector(song);
-  song.mute();
+  songDetect = minim.loadFile("levitation.mp3", 2048); // this song for detection
+  songPlayer = minim.loadFile("levitation.mp3", 2048);// this song for output sound
+  songDetect.play();
+  detector = new Detector(songDetect); // Detection with the songDetect
+  songPlayer.play();
+  songDetect.mute();
 
   ellipseMode(RADIUS);
 
@@ -42,8 +45,6 @@ void draw() {
   fill(0, overlayAlpha);
   noStroke();
   rect(0, 0, width, height);
-
-  //detector.run();
 
   // Animation at kick hit
   if ( detector.hits() ) {
@@ -64,27 +65,30 @@ void draw() {
 
   // Connect Walker
   for (int i = 0; i<walkerAmount; i++) {
-    walkers[i].connectWalker(walkers, walkerAmount);
+    walkers[i].connectWalker(walkers);
   }
 
 
   fill(250);
-  text(frameRate, 10, 10);
+  text(frameRate, 10, 20);
 }
 
-/* void stop() {
- song.close();
- minim.stop();
- super.stop();
- } */
+void stop() {
+  songDetect.close();
+  songPlayer.close();
+  minim.stop();
+  super.stop();
+} 
+
+
 
 // -----  Controls - Mute song ------- //
 void keyPressed() {
   if ( key == ' ' & isMute) {
-    song.unmute();
+    songDetect.unmute();
     isMute = false;
   } else {
-    song.mute();
+    songDetect.mute();
     isMute = true;
   }
 }

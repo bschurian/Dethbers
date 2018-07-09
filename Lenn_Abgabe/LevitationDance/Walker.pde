@@ -1,7 +1,7 @@
-class Walker {
+class Walker { //<>// //<>//
   // ---------- variables  ---------- //
   float x, y, targetX, targetY, ellipseSize = 5.0, alphaEllipse = 175;
-  int connectCount = 5, walkerCount = 0;
+  int connectCounter = 0, connectAmount = 3;
 
   // ---------- Constructor and getter-methods ---------- //
   Walker(float x_init, float y_init) {
@@ -13,6 +13,12 @@ class Walker {
   }
   float getY() {
     return y;
+  }
+  void addConnectCounter(int c) {
+    connectCounter = connectCounter+c;
+  }
+  int getConnectCounter() {
+    return connectCounter;
   }
 
   // ---------- BEATWALK: Move random and large steps  ---------- //
@@ -46,21 +52,16 @@ class Walker {
   // ---------- Display an ellipse and change radius by beat recognition ---------- //
   void show(float beatFloat) {
     beatFloat = map(beatFloat, 0, 1000, 5, 50);
-    fill(175, alphaEllipse);
+    fill(200, alphaEllipse);
     ellipse(x, y, beatFloat, beatFloat);
   }
 
-  // ---------- Connect every walker with another walker ---------- //
-  void connectWalker(Walker[] walkers, int amount) {
-    
-    for (int i = 0; i<connectCount; i++) {  
-      stroke(255, 50);
-      line(x, y, walkers[walkerCount].getX(), walkers[walkerCount].getY());
-      if ( walkerCount < amount-1 ) {
-        walkerCount += 1;
-      } else { 
-        walkerCount = 0;
-      }
+
+  // -----  Connecting dots ------- //
+  void connectWalker(Walker[] walkers) {
+    stroke(175, 50);
+    for (int i = 0; i< 3; i++) {
+      line(x, y, walkers[i].getX(), walkers[i].getY());
     }
   }
 }
