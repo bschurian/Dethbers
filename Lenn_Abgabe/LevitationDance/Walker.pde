@@ -37,8 +37,8 @@ class Walker { //<>// //<>//
 
   // ---------- WALK: Move little steps by no Beat ---------- //
   void walk() {    
-    targetX = x+random(-2, 2);
-    targetY = y+random(-2, 2);   
+    targetX = x+random(-8, 8);
+    targetY = y+random(-8, 8);   
 
     if (targetX < 0 || targetX > width || targetY < 0 || targetY > height) {
       walk();
@@ -52,7 +52,7 @@ class Walker { //<>// //<>//
   // ---------- Display an ellipse and change radius by beat recognition ---------- //
   void show(float beatFloat) {
     beatFloat = map(beatFloat, 0, 1000, 5, 50);
-    fill(200, alphaEllipse);
+    fill(51, 51, 51);
     ellipse(x, y, beatFloat, beatFloat);
   }
 
@@ -61,8 +61,9 @@ class Walker { //<>// //<>//
   // draw a line from the Walker to three other walkers
   
   void connectWalker(Walker[] walkers) {
-    stroke(175, 50);
-    for (int i = 0; i< 3; i++) {
+    for (int i = 0; i< walkers.length; i++) {
+      stroke(51, 51, 51, alphaEllipse);
+      strokeWeight(0.5);
       line(x, y, walkers[i].getX(), walkers[i].getY());
     }
   }

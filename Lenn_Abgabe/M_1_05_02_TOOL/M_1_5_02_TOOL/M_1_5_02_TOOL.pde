@@ -4,7 +4,8 @@ import ddf.minim.*;
 import ddf.minim.analysis.*;
 
 Minim minim;
-AudioPlayer song;
+AudioPlayer songDetect;
+AudioPlayer songPlay;
 BeatDetect beat;
 
 // ------ agents ------
@@ -14,13 +15,20 @@ float noiseScale = 300, noiseStrength = 10;
 float overlayAlpha = 10, agentsAlpha = 90, strokeWidth = 0.3;
 int drawMode = 1;
 
+Detector detector;
+
 void setup() {
   size(1280, 800, P3D);
   smooth();
   
   minim = new Minim(this);
-  song = minim.loadFile("levitation.mp3", 2048);
-  song.play();
+  songDetect = minim.loadFile("levitation.mp3", 2048);
+  songPlay = minim.loadFile("levitation.mp3", 2048);
+  songDetect.play();
+  detector = new Detector(songDetect); // Detection with the songDetect
+  songPlay.play();
+  songDetect.mute();
+  
   // a beat detection object song SOUND_ENERGY mode with a sensitivity of 10 milliseconds
   beat = new BeatDetect();
   
@@ -34,10 +42,8 @@ void draw() {
   fill(255, overlayAlpha);
   noStroke();
   rect(0, 0, width, height);
-
-  beat.detect(song.mix);
   
-  if ( beat.isOnset() ){
+  if ( detector.hits() ){
     int newNoiseSeed = (int) random(100000);
     noiseSeed(newNoiseSeed);
   }

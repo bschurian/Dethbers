@@ -14,27 +14,28 @@ AudioPlayer songDetect;
 AudioPlayer songPlayer;
 AudioOutput out;
 
-int walkerAmount = 20, connectCount = 3, beatInt;
+int walkerAmount = 10, connectCount = 3, beatInt;
 float overlayAlpha = 50, amp;
-Boolean isMute = true;
+Boolean isMute = false;
 Walker[] walkers = new Walker[walkerAmount];
 Detector detector;
 
 void setup() {
   size(600, 400);
   //size(1920, 1080);
-  //fullScreen();
-  background(0);
+
+  background(195, 179, 146);
   frameRate(60);
-  
+
   minim = new Minim(this);
 
   songDetect = minim.loadFile("levitation.mp3", 2048); // this song for detection
   songPlayer = minim.loadFile("levitation.mp3", 2048);// this song for output sound
   songDetect.play();
   detector = new Detector(songDetect); // Detection with the songDetect
-  songPlayer.play();
   songDetect.mute();
+  songPlayer.play();
+
 
   ellipseMode(RADIUS);
 
@@ -44,7 +45,7 @@ void setup() {
 }
 
 void draw() {
-  fill(0, overlayAlpha);
+  fill(195, 179, 146);
   noStroke();
   rect(0, 0, width, height);
 
@@ -67,13 +68,16 @@ void draw() {
 
   // Connect Walker
   for (int i = 0; i<walkerAmount; i++) {
-    walkers[i].connectWalker(walkers);
+    for (int j = 0; j < 3; j++) {
+      walkers[i].connectWalker(walkers);
+    }
   }
 
 
   println(frameRate);
   //fill(250);
   //text(frameRate, 10, 20);
+  //saveFrame("temp/sketch_#####.png");
 }
 
 void stop() {
@@ -88,10 +92,10 @@ void stop() {
 // -----  Controls - Mute song ------- //
 void keyPressed() {
   if ( key == ' ' & isMute) {
-    songDetect.unmute();
+    songPlayer.unmute();
     isMute = false;
   } else {
-    songDetect.mute();
+    songPlayer.mute();
     isMute = true;
   }
 }

@@ -1,18 +1,23 @@
 // ---------- BEAT DETECTION CLASS ----------//
 class Detector {
 
-  AudioPlayer song;
+  AudioPlayer songLow;
+  AudioPlayer songHigh;
   Boolean hit;
   BeatDetect beat;
-  int cutoffFreq = 100; // Cutoff frequency of low pass filter
+  int cutoffFreq = 200; // Cutoff frequency of low pass filter
   
   LowPassFS lowPass;    // Low pass filter
+  HighPassSP highPass;  // High pass filter
 
   Detector(AudioPlayer song_) {
-    song = song_;
+    songLow = song_;
+    songHigh = song_;
     beat = new BeatDetect();
     lowPass = new LowPassFS(cutoffFreq, song_.sampleRate());
-    song.addEffect(lowPass);
+    highPass = new HighPassSP(cutoffFreq, song_.sampleRate());
+    songLow.addEffect(lowPass);
+    //songHigh.addEffect(highPass);
   }
   
   int getBeatLevel(){
@@ -21,7 +26,7 @@ class Detector {
   }
 
   Boolean hits() {
-    beat.detect(song.mix);
+    beat.detect(songLow.mix);
     if ( beat.isOnset() ) {
       hit = true;
     } else {
