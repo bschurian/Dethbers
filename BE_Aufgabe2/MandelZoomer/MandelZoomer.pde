@@ -64,11 +64,20 @@ void mouseWheel(MouseEvent event) {
   }
 }
 
+<<<<<<< HEAD
+void update() {
+  mandel.set("rightBound", rightBound);
+  mandel.set("leftBound", leftBound);
+  mandel.set("upBound", upBound);
+  mandel.set("downBound", downBound);
+  shader(mandel);
+  rect(0, 0, width, height);
+=======
 float c = 0;
 
 void draw() {
-  //lights();
-  //background(100);
+  lights();
+  background(100);
 
   shader(mandel);
   update();
@@ -78,5 +87,11 @@ void draw() {
   resetShader();
   text(nf(frameRate, 2, 1) + " fps", -float(width)/2+40, -float(height)/2+40, 30);
   text(width + "x" + height + " pixels", -float(width)/2+40, -float(height)/2+60, 30);
+>>>>>>> Ben
+}
 
+void draw() {
+  update();
+  text(nf(frameRate, 2, 1) + " fps", 10, 30);
+  text(width + "x" + height + " pixels", 10, 45);
 }
