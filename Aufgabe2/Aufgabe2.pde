@@ -1,13 +1,20 @@
 PShader mandel;
-protected int thresh = 10;
-protected float rightBound = 1;
-protected float leftBound = -2.5;
-protected float upBound = 1;
-protected float downBound = - 1;
-final float zoomFactor = 2;
+int thresh = 10;
+float rightBound = 1;
+float leftBound = -2.5;
+float upBound = 1;
+float downBound = - 1;
+
+boolean locked = false;
+float xOffset = 0.0;
+float yOffset = 0.0;
+
+final float zoomFactor = 8;
+
 
 void setup() {
-  size(640, 360, P3D);
+  //size(640, 360, P3D);
+  fullScreen(P3D);
   //defaultCam is ortho();
   noStroke();
 
@@ -29,28 +36,28 @@ void mouseWheel(MouseEvent event) {
   final float e = event.getCount();
   boolean zoomRegistered = true;
   boolean zoomIn= false;
-  if(e==-1){
+  if (e==-1) {
     zoomIn = false;
-  }else{
-    if(e==1){
+  } else {
+    if (e==1) {
       zoomIn = true;
-    }else{
+    } else {
       zoomRegistered = false;
     }
   }
-  if(zoomRegistered){
+  if (zoomRegistered) {
     //the point under the mouse is where to zoom in to/ out of
     final float mX = float(mouseX)/width;
-    final float x = map(mX,0,1,leftBound,rightBound);
+    final float x = map(mX, 0, 1, leftBound, rightBound);
     final float mY = float(mouseY)/height;
-    final float y = map(mY,0,1,downBound,upBound);
+    final float y = map(mY, 0, 1, downBound, upBound);
     //distance to that point
     float xToRB= abs(x - rightBound);
     float xToLB= abs(x - leftBound);
     float yToUB= abs(y - upBound);
     float yToDB= abs(y - downBound);
     //reverse distance if zooming out
-    if(!zoomIn){
+    if (!zoomIn) {
       xToRB *= -1;
       xToLB *= -1;
       yToUB *= -1;
@@ -64,11 +71,43 @@ void mouseWheel(MouseEvent event) {
   }
 }
 
+void mousePressed() { 
+  locked = true;
+
+  //the point under the mouse is where to zoom in to/ out of
+  final float mX = float(mouseX)/width;
+  xOffset = map(mX, 0, 1, leftBound, rightBound);
+  final float mY = float(mouseY)/height;
+  yOffset = map(mY, 0, 1, downBound, upBound);
+}
+
+void mouseDragged() {
+  if (locked) {
+    //the point under the mouse is where to zoom in to/ out of
+    final float mX = float(mouseX)/width;
+    final float x = map(mX, 0, 1, leftBound, rightBound);
+    final float mY = float(mouseY)/height;
+    final float y = map(mY, 0, 1, downBound, upBound);
+  
+    leftBound += xOffset - x;
+    rightBound += xOffset - x;
+    
+    upBound += yOffset - y;
+    downBound += yOffset - y;
+  }
+}
+
+void mouseReleased() {
+  locked = false;
+}
+
+
+
 float c = 0;
 
 void draw() {
-  //lights();
-  //background(100);
+  lights();
+  background(100);
 
   shader(mandel);
   update();
@@ -78,5 +117,4 @@ void draw() {
   resetShader();
   text(nf(frameRate, 2, 1) + " fps", -float(width)/2+40, -float(height)/2+40, 30);
   text(width + "x" + height + " pixels", -float(width)/2+40, -float(height)/2+60, 30);
-
 }
