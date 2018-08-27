@@ -1,24 +1,5 @@
-// Material properties
-uniform float plasmaratio;
-uniform float plasmazoomout;
-uniform float uOffset;
-uniform float vOffset;
-uniform float t;
-
-uniform vec3 lightAmbient[8];
-uniform vec3 lightDiffuse[8];
-uniform vec3 lightSpecular[8];
-
+//in vec4 color_;
 in vec2 UV;
-
-in vec4 specular_;
-in float shininess_;
-
-in vec3 normal_;  //n
-in vec3 light_;  //l
-in vec3 camera_;    //e
-in vec4 position_;  //r ?
-
 
 
 //
@@ -125,40 +106,7 @@ float snoise(vec3 v)
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
-void main() {
-
-  // Receives directional light?
-  //Normalize light
-  vec3 l = normalize(light_);
-  vec3 e = normalize(camera_);
-  vec3 n = normalize(normal_);
-
-  vec3 ambient = vec3(0);
-  vec3 diffuse = vec3(0);
-  vec3 specular = vec3(0);
-
-  // Ambient light
-  ambient = lightAmbient[0];  //ambient
-
-  float diffuseIntensity = dot(n, l);
-  if (diffuseIntensity > 0.0) {
-    diffuse = lightDiffuse[1] * diffuseIntensity;
-  }
-  
-  vec3 r = normalize(reflect(l, n));
-  float specularIntensity = pow(max( dot(r,-e), 0.0), shininess_);
-  specular = lightSpecular[1] * specularIntensity;
-
-  float x = UV.x;
-  float y = UV.y;
-  //seashell color orangey
-  vec3 white = vec3(0.9764705882352941, 0.9607843137254902, 0.9176470588235294);
-  vec3 orange = vec3(0.8862745098039215, 0.596078431372549, 0.30196078431372547);
-  vec3 plasma = mix(orange, white, snoise(vec3(UV.x*plasmazoomout+uOffset,UV.y*plasmazoomout*plasmaratio+vOffset,t)));
-  //plasma += vec3(0.7,0.3,0.3)*pow(snoise(vec3(UV.x*plasmazoomout+100,UV.y*plasmazoomout*plasmaratio+100,0)),16)*2;
-  
-  vec3 objectColor = (ambient + diffuse + specular) * plasma;
-  //vec3 objectColor = plasma;
-  
-  gl_FragColor = vec4(objectColor, 1.0);
+void main(void) {
+    vec3 stars = vec3(pow(snoise(vec3(UV.x*400,UV.y*400,0)),10));
+    gl_FragColor = vec4(stars,1);
 }

@@ -1,28 +1,18 @@
-// Material properties
-uniform float plasmaratio;
-uniform float plasmazoomout;
-uniform float uOffset;
-uniform float vOffset;
-uniform float t;
+uniform vec4 baseColor;
+uniform sampler2D shadowMap;
+uniform sampler2D shadowMap2;
 
-uniform vec3 lightAmbient[8];
-uniform vec3 lightDiffuse[8];
-uniform vec3 lightSpecular[8];
+//in vec4 color_;
+in vec4 shadowMapCoordinates;
+in vec4 shadowMapCoordinates2;
+in float lambert;
 
+//in vec4 color_;
 in vec2 UV;
-
-in vec4 specular_;
-in float shininess_;
-
-in vec3 normal_;  //n
-in vec3 light_;  //l
-in vec3 camera_;    //e
-in vec4 position_;  //r ?
-
 
 
 //
-// Description : Array and textureless GLSL 2D/3D/4D simplex 
+// Description : Array and textureless GLSL 2D/3D/4D simplex
 //               noise functions.
 //      Author : Ian McEwan, Ashima Arts.
 //  Maintainer : stegu
@@ -31,7 +21,7 @@ in vec4 position_;  //r ?
 //               Distributed under the MIT License. See LICENSE file.
 //               https://github.com/ashima/webgl-noise
 //               https://github.com/stegu/webgl-noise
-// 
+//
 
 vec3 mod289(vec3 x) {
   return x - floor(x * (1.0 / 289.0)) * 289.0;
@@ -51,7 +41,7 @@ vec4 taylorInvSqrt(vec4 r)
 }
 
 float snoise(vec3 v)
-  { 
+  {
   const vec2  C = vec2(1.0/6.0, 1.0/3.0) ;
   const vec4  D = vec4(0.0, 0.5, 1.0, 2.0);
 
@@ -74,10 +64,10 @@ float snoise(vec3 v)
   vec3 x3 = x0 - D.yyy;      // -1.0+3.0*C.x = -0.5 = -D.y
 
 // Permutations
-  i = mod289(i); 
-  vec4 p = permute( permute( permute( 
+  i = mod289(i);
+  vec4 p = permute( permute( permute(
              i.z + vec4(0.0, i1.z, i2.z, 1.0 ))
-           + i.y + vec4(0.0, i1.y, i2.y, 1.0 )) 
+           + i.y + vec4(0.0, i1.y, i2.y, 1.0 ))
            + i.x + vec4(0.0, i1.x, i2.x, 1.0 ));
 
 // Gradients: 7x7 points over a square, mapped onto an octahedron.
@@ -121,44 +111,24 @@ float snoise(vec3 v)
 // Mix final noise value
   vec4 m = max(0.6 - vec4(dot(x0,x0), dot(x1,x1), dot(x2,x2), dot(x3,x3)), 0.0);
   m = m * m;
-  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1), 
+  return 42.0 * dot( m*m, vec4( dot(p0,x0), dot(p1,x1),
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
-void main() {
-
-  // Receives directional light?
-  //Normalize light
-  vec3 l = normalize(light_);
-  vec3 e = normalize(camera_);
-  vec3 n = normalize(normal_);
-
-  vec3 ambient = vec3(0);
-  vec3 diffuse = vec3(0);
-  vec3 specular = vec3(0);
-
-  // Ambient light
-  ambient = lightAmbient[0];  //ambient
-
-  float diffuseIntensity = dot(n, l);
-  if (diffuseIntensity > 0.0) {
-    diffuse = lightDiffuse[1] * diffuseIntensity;
-  }
-  
-  vec3 r = normalize(reflect(l, n));
-  float specularIntensity = pow(max( dot(r,-e), 0.0), shininess_);
-  specular = lightSpecular[1] * specularIntensity;
-
-  float x = UV.x;
-  float y = UV.y;
-  //seashell color orangey
-  vec3 white = vec3(0.9764705882352941, 0.9607843137254902, 0.9176470588235294);
-  vec3 orange = vec3(0.8862745098039215, 0.596078431372549, 0.30196078431372547);
-  vec3 plasma = mix(orange, white, snoise(vec3(UV.x*plasmazoomout+uOffset,UV.y*plasmazoomout*plasmaratio+vOffset,t)));
-  //plasma += vec3(0.7,0.3,0.3)*pow(snoise(vec3(UV.x*plasmazoomout+100,UV.y*plasmazoomout*plasmaratio+100,0)),16)*2;
-  
-  vec3 objectColor = (ambient + diffuse + specular) * plasma;
-  //vec3 objectColor = plasma;
-  
-  gl_FragColor = vec4(objectColor, 1.0);
+void main(void) {
+  float intens  = pow(snoise(vec3(UV.x*30,UV.y*4,0)),0.3);
+    gl_FragColor = vec4(baseColor.rgb * lambert * intens, baseColor.w);
+    //gl_FragColor = vec4(intens, intens, intens, 1);
+    //gl_FragColor = vec4(UV.x,UV.y,0,1);
+    // Only render shadow if fragment is facing the light
+    if (lambert > 0.0) {
+        float depth = texture(shadowMap, shadowMapCoordinates.xy).r;
+        float depth2 = texture(shadowMap2, shadowMapCoordinates2.xy).r;
+        if (shadowMapCoordinates.z > depth) {
+          gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
+        }
+        if (shadowMapCoordinates.z > depth2) {
+          gl_FragColor -= vec4(0.2, 0.2, 0.2, 0); // Subtract some light
+        }
+    }
 }
