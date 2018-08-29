@@ -164,8 +164,13 @@ void keyReleased() {
 
 void setup() {
 
+<<<<<<< Updated upstream
   //fullScreen(P3D);
   size(800, 600, P3D);
+=======
+  fullScreen(P3D);
+  //size(800, 600, P3D);
+>>>>>>> Stashed changes
   blendMode(BLEND);
 
   // Setup camera
@@ -196,8 +201,13 @@ void setup() {
   // Init scene render
   sceneShader = new PShader(this, "scene.vert", "scene.frag");
   shader(sceneShader);
+<<<<<<< Updated upstream
   treeShader = new PShader(this, "tree.vert", "tree.frag");
   shader(treeShader);
+=======
+   treeShader = new PShader(this, "tree.vert", "tree.frag");
+ // shader(treeShader);
+>>>>>>> Stashed changes
   noStroke();
   perspective(60 * DEG_TO_RAD, (float)width / height, 10, 4000);
   // Init earth render
@@ -238,6 +248,7 @@ public void renderTree(PGraphics canvas) {
   // Tree
   canvas.pushMatrix();
   canvas.scale(0.2);
+<<<<<<< Updated upstream
   //sceneShader.set(
   treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
   //sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
@@ -246,6 +257,19 @@ public void renderTree(PGraphics canvas) {
   // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
   // turtle1.fruitDraw(g);
   sceneShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
+=======
+
+  //treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
+ // sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
+  treeShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
+  turtle1.draw(canvas);
+  // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
+  // turtle1.fruitDraw(g);
+  //sceneShader.set("baseColor", 0.396078431372549, 0.3843137254901961, 0.25098039215686274, 1.0 );
+  
+  treeShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
+
+>>>>>>> Stashed changes
   turtle2.draw(canvas);
   canvas.popMatrix();
 }
@@ -320,7 +344,11 @@ public void renderShadowMaps() {
   shadowMap.endDraw();
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
+<<<<<<< Updated upstream
   treeShader.set("shadowMap", shadowMap);  // Send to shader
+=======
+  //treeShader.set("shadowMap", shadowMap);  // Send to shader
+>>>>>>> Stashed changes
   // Generate shadow coordinate transformation matrix
   final PMatrix3D PMV = ((PGraphicsOpenGL)shadowMap).projmodelview;
   final PMatrix3D MV_inverse = ((PGraphicsOpenGL)g).modelviewInv;    
@@ -330,7 +358,11 @@ public void renderShadowMaps() {
   shadowTransform.apply(MV_inverse); // Processing needs us to apply the inverted model-view matrix of the final scene pass [1] 
   shadowTransform.transpose(); // [2]
   sceneShader.set("shadowTransform", shadowTransform); // Send to shader
+<<<<<<< Updated upstream
   treeShader.set("shadowTransform", shadowTransform); // Send to shader
+=======
+  //treeShader.set("shadowTransform", shadowTransform); // Send to shader
+>>>>>>> Stashed changes
   earthShader.set("shadowTransform", shadowTransform); // Send to shader
 
   shadowMap2.beginDraw();
@@ -359,9 +391,20 @@ public void renderScene() {
   // Render
   shader(treeShader);
   renderTree(g);
+<<<<<<< Updated upstream
   shader(treeShader);
   treeShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
   //blendMode(ADD);
+=======
+
+  shader(sceneShader);
+  //sceneShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
+ 
+  shader(treeShader);
+   treeShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
+  //blendMode(ADD);
+
+>>>>>>> Stashed changes
   renderWhales(g);
   //blendMode(BLEND);
   shader(earthShader);
