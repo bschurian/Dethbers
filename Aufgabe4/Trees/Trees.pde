@@ -164,7 +164,6 @@ void keyReleased() {
 
 void setup() {
 
-
   fullScreen(P3D);
   //size(800, 600, P3D);
   blendMode(BLEND);
@@ -197,7 +196,6 @@ void setup() {
   // Init scene render
   sceneShader = new PShader(this, "scene.vert", "scene.frag");
   shader(sceneShader);
-
    treeShader = new PShader(this, "tree.vert", "tree.frag");
  // shader(treeShader);
   noStroke();
@@ -240,14 +238,6 @@ public void renderTree(PGraphics canvas) {
   // Tree
   canvas.pushMatrix();
   canvas.scale(0.2);
-  //sceneShader.set(
-  treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
-  //sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
-  sceneShader.set("baseColor", 1.0*0.95, 0.98*0.95, 0.98*0.95, 1.0 );
-  turtle1.draw(canvas);
-  // sceneShader.set("baseColor", 0.5, 0.5, 0.5, 0.6);
-  // turtle1.fruitDraw(g);
-  sceneShader.set("baseColor", 1.0, 1.0, 1.0, 1.0 );
 
   //treeShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
  // sceneShader.set("baseColor", 0.49019607843137253, 0.4117647058823529, 0.20392156862745098, 1.0 );
@@ -333,7 +323,6 @@ public void renderShadowMaps() {
   shadowMap.endDraw();
   sceneShader.set("shadowMap", shadowMap);  // Send to shader
   earthShader.set("shadowMap", shadowMap);  // Send to shader
-
   //treeShader.set("shadowMap", shadowMap);  // Send to shader
   // Generate shadow coordinate transformation matrix
   final PMatrix3D PMV = ((PGraphicsOpenGL)shadowMap).projmodelview;
@@ -373,7 +362,6 @@ public void renderScene() {
   // Render
   shader(treeShader);
   renderTree(g);
-
 
   shader(sceneShader);
   //sceneShader.set("baseColor", 0.1, 0.5, 1.0, 1.0);
@@ -421,7 +409,7 @@ public void renderLightSources() {
   fill(255);
   translate(light2.x*1.05, light2.y*1.05, light2.z*1.05);
   sphere(5);
-  popMatrix();t
+  popMatrix();
 }
 void draw() {
   background(255, 0, 0);
